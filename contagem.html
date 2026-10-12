@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#f4f7f2">
+	<meta name="description" content="Calcule os carboidratos da refeição usando o Manual de Contagem de Carboidratos da SBD 2025.">
+	<title>Contagem de carboidratos | Cuidar+</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			color-scheme: light;
+			--page: #f4f7f2;
+			--surface: #fff;
+			--ink: #1d2e28;
+			--muted: #62736b;
+			--line: #dce6df;
+			--green: #176b52;
+			--green-dark: #10533f;
+			--green-soft: #e4f1e9;
+			--orange: #bd542b;
+			--orange-soft: #fff0e8;
+			--yellow: #f5ca66;
+			--shadow: 0 14px 35px rgba(30, 58, 44, .07);
+			--focus: #b34e20;
+			--notice-bg: #fff3d7;
+			--notice-ink: #654a19;
+		}
+		* { box-sizing: border-box; }
+		body { min-width: 320px; min-height: 100vh; margin: 0; color: var(--ink); background: var(--page); font: 16px/1.5 "DM Sans", sans-serif; }
+		button, input, select { font: inherit; }
+		button, a { -webkit-tap-highlight-color: transparent; }
+		:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+		.skip-link { position: fixed; top: -60px; left: 14px; z-index: 20; padding: 10px 14px; border-radius: 8px; background: var(--ink); color: #fff; }
+		.skip-link:focus { top: 12px; }
+		.topbar { min-height: 66px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(20px, calc((100vw - 1120px) / 2)); border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--surface) 92%, transparent); }
+		.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font: 800 16px Manrope, sans-serif; }
+		.brand-mark { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 12px 12px 12px 4px; color: #fff; background: var(--green); }
+		.accessibility-controls { display: flex; align-items: center; gap: 7px; margin-left: auto; }
+		.access-toggle { min-height: 38px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 0 10px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: var(--surface); font-size: 12px; font-weight: 700; cursor: pointer; }
+		.access-toggle:hover { border-color: var(--green); }
+		.access-toggle[aria-pressed="true"] { border-color: var(--green); color: var(--green-dark); background: var(--green-soft); }
+		.access-toggle svg { flex: 0 0 auto; }
+		.access-toggle:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+		.back-link { display: inline-flex; align-items: center; gap: 7px; color: var(--green-dark); font-size: 14px; font-weight: 700; text-decoration: none; }
+		.back-link:hover { text-decoration: underline; }
+		main { width: min(900px, calc(100% - 32px)); margin: 34px auto 56px; }
+		.page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
+		.eyebrow { margin: 0 0 7px; color: var(--green); font-size: 11px; font-weight: 800; text-transform: uppercase; }
+		h1, h2, h3 { margin-top: 0; font-family: Manrope, sans-serif; }
+		h1 { margin-bottom: 7px; font-size: clamp(27px, 5vw, 36px); line-height: 1.15; }
+		h2 { margin-bottom: 0; font-size: 19px; }
+		.intro { margin: 0; color: var(--muted); }
+		.meal-summary { position: relative; overflow: hidden; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 20px; margin-bottom: 20px; padding: 22px 25px; border: 1px solid #c9dfd1; border-radius: 12px; background: linear-gradient(118deg, #e7f3e9 0%, #f1f7ed 62%, #fff5de 100%); }
+		.meal-summary:after { content: ""; position: absolute; width: 120px; height: 120px; right: 86px; top: -78px; border: 1px solid rgba(23,107,82,.12); border-radius: 50%; box-shadow: 0 0 0 18px rgba(23,107,82,.04), 0 0 0 36px rgba(23,107,82,.035); pointer-events: none; }
+		.summary-label { margin: 0 0 3px; color: #39574a; font-size: 13px; font-weight: 700; }
+		.summary-hint { margin: 0; color: var(--muted); font-size: 12px; }
+		.summary-total { position: relative; z-index: 1; min-width: 130px; text-align: right; }
+		.summary-total strong { display: block; color: var(--green-dark); font: 800 34px/1.1 Manrope, sans-serif; }
+		.summary-total span { color: var(--muted); font-size: 13px; }
+		.section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 24px 0 11px; }
+		.food-count { color: var(--muted); font-size: 12px; font-weight: 700; }
+		#food-rows { display: grid; gap: 10px; }
+		.food-row { min-width: 0; display: grid; grid-template-columns: 34px minmax(0, 1fr) 38px; gap: 12px; align-items: start; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); box-shadow: 0 2px 8px rgba(30, 58, 44, .025); }
+		.row-number { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 9px; color: var(--green-dark); background: var(--green-soft); font: 800 13px Manrope, sans-serif; }
+		.row-fields { min-width: 0; display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(115px, .75fr) minmax(145px, .9fr); gap: 12px; align-items: end; }
+		label { min-width: 0; display: grid; gap: 6px; color: #334b40; font-size: 12px; font-weight: 700; }
+		input[type="search"], input[type="number"], select { width: 100%; min-width: 0; height: 44px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); background: var(--surface); }
+		input::placeholder { color: #82918a; }
+		input[type="number"] { font-variant-numeric: tabular-nums; }
+		.food-search { position: relative; }
+		.food-results { position: absolute; inset: calc(100% + 5px) 0 auto; z-index: 8; max-height: 300px; overflow-y: auto; padding: 5px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); box-shadow: var(--shadow); }
+		.food-results[hidden] { display: none; }
+		.food-option { width: 100%; display: grid; gap: 2px; padding: 9px 10px; border: 0; border-radius: 6px; color: var(--ink); background: transparent; text-align: left; cursor: pointer; }
+		.food-option:hover, .food-option:focus-visible { background: var(--green-soft); }
+		.food-option strong { font-size: 13px; }
+		.food-option small { color: var(--muted); font-size: 11px; }
+		.unit-switch { min-width: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 3px; min-height: 44px; padding: 3px; border: 1px solid var(--line); border-radius: 8px; background: var(--page); }
+		.unit-switch label { display: block; min-width: 0; cursor: pointer; }
+		.unit-switch input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+		.unit-switch span { min-height: 36px; display: grid; place-items: center; padding: 0 7px; border-radius: 5px; color: var(--muted); font-size: 11px; text-align: center; }
+		.unit-switch input:checked + span { color: #fff; background: var(--green); font-weight: 800; }
+		.unit-switch input:focus-visible + span { outline: 3px solid var(--focus); outline-offset: 1px; }
+		.row-result { grid-column: 2 / 3; display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 20px; color: var(--muted); font-size: 12px; }
+		.row-result strong { color: var(--green-dark); font-size: 13px; }
+		.source-link { color: var(--green-dark); font-weight: 700; }
+		.icon-button { width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); background: var(--surface); cursor: pointer; }
+		.icon-button:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); }
+		.icon-button:disabled { opacity: .38; cursor: not-allowed; }
+		.row-actions { display: flex; justify-content: flex-end; }
+		.controls { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
+		.controls-primary { display: flex; align-items: center; gap: 9px; }
+		.button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0 14px; border: 1px solid transparent; border-radius: 7px; font-weight: 800; cursor: pointer; }
+		.button-primary { color: #fff; background: var(--green); }
+		.button-primary:hover:not(:disabled) { background: var(--green-dark); }
+		.button-secondary { color: var(--green-dark); border-color: var(--line); background: var(--surface); }
+		.button:disabled { opacity: .45; cursor: not-allowed; }
+		.notice { display: flex; align-items: flex-start; gap: 9px; margin-top: 20px; padding: 12px 14px; border-radius: 8px; color: var(--notice-ink); background: var(--notice-bg); font-size: 12px; }
+		.source-note { margin: 12px 0 0; color: var(--muted); font-size: 11px; }
+		.source-note a { color: var(--green-dark); font-weight: 700; }
+		.empty-search { padding: 12px; color: var(--muted); font-size: 12px; }
+		.history-list { display: grid; gap: 10px; }
+		.history-entry { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 14px; padding: 15px 16px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
+		.history-entry h3 { margin: 0; font-size: 15px; }
+		.history-meta { margin: 4px 0 8px; color: var(--muted); font-size: 12px; }
+		.history-foods { margin: 0; padding-left: 18px; color: var(--muted); font-size: 12px; }
+		.history-total { color: var(--green-dark); font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; }
+		.history-actions { display: flex; gap: 5px; align-items: flex-start; }
+		.history-empty { padding: 18px; border: 1px dashed var(--line); border-radius: 9px; color: var(--muted); background: var(--surface); font-size: 13px; }
+		.history-heading { margin-top: 32px; }
+		body.dark-mode { color-scheme: dark; --page: #171d1b; --surface: #222b28; --ink: #f1f5f2; --muted: #bac6c0; --line: #3b4943; --green: #78c9a8; --green-dark: #a1e2c4; --green-soft: #293f36; --orange: #ff9b83; --orange-soft: #482d28; --focus: #f3c760; --notice-bg: #423923; --notice-ink: #f5d991; --shadow: 0 14px 35px rgba(0,0,0,.28); }
+		body.dark-mode .topbar { background: color-mix(in srgb, var(--surface) 96%, transparent); }
+		body.dark-mode .meal-summary { border-color: #486754; background: linear-gradient(118deg, #263d34 0%, #26372f 62%, #403a27 100%); }
+		body.dark-mode .summary-label { color: #d4e7db; }
+		body.high-contrast { --page: #fff; --surface: #fff; --ink: #000; --muted: #242424; --line: #333; --green: #005035; --green-dark: #003b27; --green-soft: #d9f5e5; --orange: #8b2c00; --orange-soft: #ffe4d6; --focus: #a03800; --notice-bg: #fff2c7; --notice-ink: #382400; --shadow: 0 0 0 1px #333; }
+		body.high-contrast .topbar { background: #fff; border-color: #000; }
+		body.high-contrast .meal-summary { border: 2px solid #000; background: #e5f4e9; }
+		body.high-contrast .food-row, body.high-contrast input, body.high-contrast select, body.high-contrast .unit-switch, body.high-contrast .access-toggle { border-color: #000; }
+		body.dark-mode.high-contrast { --page: #000; --surface: #000; --ink: #fff; --muted: #fff; --line: #fff; --green: #8cffc3; --green-dark: #aaffd2; --green-soft: #173b2b; --orange: #ffad99; --orange-soft: #421a12; --focus: #ffe26a; --notice-bg: #362900; --notice-ink: #fff; --shadow: 0 0 0 1px #fff; }
+		body.dark-mode.high-contrast .meal-summary { border-color: #fff; background: #102d20; }
+		body.dark-mode.high-contrast .summary-label { color: #fff; }
+		@media (max-width: 700px) {
+			.topbar { padding-inline: 16px; }
+			main { width: min(100% - 22px, 600px); margin-top: 23px; }
+			.page-heading { align-items: flex-start; }
+			.meal-summary { padding: 18px; }
+			.food-row { grid-template-columns: 30px minmax(0,1fr) 34px; gap: 8px; padding: 12px; }
+			.row-fields { grid-template-columns: minmax(0, 1fr) minmax(110px, .7fr); gap: 10px; }
+			.food-search { grid-column: 1 / -1; }
+			.row-result { grid-column: 2 / 3; }
+			.icon-button { width: 34px; height: 34px; }
+		}
+		@media (max-width: 390px) {
+			.back-link span { display: none; }
+			.page-heading { flex-direction: column; }
+			.row-fields { grid-template-columns: 1fr; }
+			.food-search { grid-column: auto; }
+			.row-result { grid-column: 2 / 3; align-items: flex-start; flex-direction: column; }
+			.controls { align-items: stretch; flex-direction: column; }
+			.controls .button { width: 100%; }
+			.summary-total { min-width: 100px; }
+			.summary-total strong { font-size: 28px; }
+		}
+		@media (max-width: 560px) {
+			.topbar { gap: 8px; padding-inline: 12px; }
+			.brand > span:not(.brand-mark), .back-link span:last-child, .access-toggle .access-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; }
+			.accessibility-controls { gap: 5px; }
+			.access-toggle { width: 38px; height: 38px; padding: 0; }
+		}
+		@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+	</style>
+</head>
+<body>
+	<a class="skip-link" href="#main">Pular para a contagem</a>
+	<header class="topbar">
+		<a class="brand" href="index.html" aria-label="Cuidar+ Acessível, voltar ao início"><span class="brand-mark" aria-hidden="true">+</span><span>cuidar+ acessível</span></a>
+		<div class="accessibility-controls" aria-label="Acessibilidade">
+			<button class="access-toggle" id="contrast-toggle" type="button" aria-pressed="false" aria-label="Ativar alto contraste" title="Alto contraste"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8"/><path d="M12 3a9 9 0 0 0 0 18V3Z" fill="currentColor"/></svg><span class="access-label">Alto contraste</span></button>
+			<button class="access-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="Ativar modo escuro" title="Modo escuro"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 15.5A8.5 8.5 0 0 1 8.5 3.5 8.5 8.5 0 1 0 20.5 15.5Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span class="access-label">Modo escuro</span></button>
+		</div>
+		<a class="back-link" href="index.html"><span aria-hidden="true">←</span><span>Voltar ao app</span></a>
+	</header>
+	<main id="main">
+		<header class="page-heading">
+			<div><p class="eyebrow">Planejamento da refeição</p><h1>Contagem de carboidratos</h1><p class="intro">Pesquise os alimentos e informe a quantidade consumida.</p></div>
+		</header>
+		<section class="meal-summary" aria-live="polite" aria-atomic="true">
+			<div><p class="summary-label">Total estimado da refeição</p><p class="summary-hint" id="meal-status">Adicione alimentos para calcular.</p></div>
+			<div class="summary-total"><strong id="meal-total">0</strong><span>g de carboidratos</span></div>
+		</section>
+		<div class="section-heading"><h2>Alimentos</h2><span class="food-count" id="food-count">0 de 5</span></div>
+		<section id="food-rows" aria-label="Alimentos desta refeição"></section>
+			<div class="controls">
+			<div class="controls-primary"><button class="button button-secondary" id="add-food" type="button"><span aria-hidden="true">＋</span> Adicionar alimento</button><button class="button button-primary" id="save-meal" type="button" disabled>Salvar refeição</button></div>
+			<button class="button button-secondary" id="clear-meal" type="button">Limpar refeição</button>
+		</div>
+		<aside class="notice"><span aria-hidden="true">ⓘ</span><span>Estimativa baseada na porção de referência do Manual SBD. O resultado não calcula dose de insulina nem substitui orientação do profissional que acompanha você.</span></aside>
+		<p class="source-note">Fonte: <a href="manual-contagem-carboidratos-web-1.pdf" target="_blank" rel="noopener">Manual de Contagem de Carboidratos para Pessoas com Diabetes, Sociedade Brasileira de Diabetes, 2025</a>. Cada alimento na lista informa a página de origem.</p>
+		<section aria-labelledby="history-title">
+			<div class="section-heading history-heading"><h2 id="history-title">Histórico de alimentação</h2><span class="food-count" id="history-count">0 refeições</span></div>
+			<div class="history-list" id="meal-history"></div>
+		</section>
+	</main>
+	<template id="food-row-template">
+		<article class="food-row">
+			<span class="row-number" aria-hidden="true"></span>
+			<div class="row-fields">
+				<label class="food-search">Alimento
+					<input type="search" class="food-query" role="combobox" aria-autocomplete="list" aria-expanded="false" placeholder="Digite para pesquisar" autocomplete="off">
+					<div class="food-results" role="listbox" hidden></div>
+				</label>
+				<label>Quantidade<input class="food-quantity" type="number" min="0" step="0.1" value="1" inputmode="decimal"></label>
+				<fieldset class="unit-switch" aria-label="Unidade da quantidade">
+					<label><input type="radio" name="unit" value="portion" checked><span>Porção</span></label>
+					<label><input type="radio" name="unit" value="grams"><span>Gramas</span></label>
+				</fieldset>
+			</div>
+			<div class="row-actions"><button class="icon-button remove-food" type="button" aria-label="Remover alimento"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+			<div class="row-result" aria-live="polite"><span class="food-reference">Escolha um alimento do manual.</span><strong class="food-carbs">— g CHO</strong></div>
+		</article>
+	</template>
+	<script src="carboidratos-data.js"></script>
+	<script>
+		(() => {
+			const MAX_FOODS = 5;
+			const HISTORY_KEY = "cuidar-carbohydrate-meal-history-v1";
+			const foods = Array.isArray(window.CARBOHYDRATE_FOODS) ? window.CARBOHYDRATE_FOODS : [];
+			const rows = document.getElementById("food-rows");
+			const numberFormat = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 });
+			let nextRowId = 1;
+			let editingMealId = null;
+			let mealHistory = [];
+			try {
+				const storedHistory = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+				mealHistory = Array.isArray(storedHistory) ? storedHistory.filter(meal => meal && Array.isArray(meal.foods)) : [];
+			} catch { mealHistory = []; }
+			try {
+				if (localStorage.getItem("cuidar-mais-theme") === "dark") document.body.classList.add("dark-mode");
+				if (localStorage.getItem("cuidar-mais-contrast") === "high") document.body.classList.add("high-contrast");
+			} catch { /* A calculadora continua disponível sem armazenamento local. */ }
+			const syncAccessibilityControls = () => {
+				const contrast = document.body.classList.contains("high-contrast");
+				const dark = document.body.classList.contains("dark-mode");
+				const contrastButton = document.getElementById("contrast-toggle");
+				const themeButton = document.getElementById("theme-toggle");
+				contrastButton.setAttribute("aria-pressed", String(contrast));
+				contrastButton.setAttribute("aria-label", `${contrast ? "Desativar" : "Ativar"} alto contraste`);
+				contrastButton.title = contrast ? "Desativar alto contraste" : "Ativar alto contraste";
+				themeButton.setAttribute("aria-pressed", String(dark));
+				themeButton.setAttribute("aria-label", `${dark ? "Desativar" : "Ativar"} modo escuro`);
+				themeButton.title = dark ? "Desativar modo escuro" : "Ativar modo escuro";
+			};
+			document.getElementById("contrast-toggle").addEventListener("click", () => {
+				document.body.classList.toggle("high-contrast");
+				syncAccessibilityControls();
+				try { localStorage.setItem("cuidar-mais-contrast", document.body.classList.contains("high-contrast") ? "high" : "normal"); } catch { /* Preferência vale até fechar esta página. */ }
+			});
+			document.getElementById("theme-toggle").addEventListener("click", () => {
+				document.body.classList.toggle("dark-mode");
+				syncAccessibilityControls();
+				try { localStorage.setItem("cuidar-mais-theme", document.body.classList.contains("dark-mode") ? "dark" : "light"); } catch { /* Preferência vale até fechar esta página. */ }
+			});
+
+			const normalize = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR").trim();
+			const escapeHtml = value => String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+
+			function addRow() {
+				if (rows.children.length >= MAX_FOODS) return;
+				const rowId = String(nextRowId++);
+				const fragment = document.getElementById("food-row-template").content.cloneNode(true);
+				const row = fragment.querySelector(".food-row");
+				row.dataset.rowId = rowId;
+				row.querySelector(".row-number").textContent = String(rows.children.length + 1);
+				for (const radio of row.querySelectorAll('input[type="radio"]')) radio.name = `unit-${rowId}`;
+				rows.append(fragment);
+				updateRowControls();
+				calculateMeal();
+				row.querySelector(".food-query").focus();
+			}
+
+			function updateRowControls() {
+				const rowCount = rows.children.length;
+				document.getElementById("food-count").textContent = `${rowCount} de ${MAX_FOODS}`;
+				document.getElementById("add-food").disabled = rowCount >= MAX_FOODS;
+				[...rows.children].forEach((row, index) => {
+					row.querySelector(".row-number").textContent = String(index + 1);
+					row.querySelector(".remove-food").disabled = rowCount <= 1;
+				});
+			}
+
+			function renderMatches(row, query) {
+				const list = row.querySelector(".food-results");
+				const input = row.querySelector(".food-query");
+				const search = normalize(query);
+				if (search.length < 2) {
+					list.hidden = true;
+					input.setAttribute("aria-expanded", "false");
+					return;
+				}
+				const matches = foods.filter(food => normalize(food.name).includes(search)).slice(0, 8);
+				list.innerHTML = matches.length ? matches.map(food => `<button class="food-option" type="button" role="option" data-food-id="${escapeHtml(food.id)}"><strong>${escapeHtml(food.name)}</strong><small>${escapeHtml(food.portion)} · ${numberFormat.format(food.referenceAmount)} g/ml · ${numberFormat.format(food.carbohydrates)} g CHO · p. ${food.sourcePage}</small></button>`).join("") : `<div class="empty-search">Nenhum alimento encontrado na tabela.</div>`;
+				list.hidden = false;
+				input.setAttribute("aria-expanded", "true");
+			}
+
+			function chooseFood(row, food) {
+				row.dataset.foodId = food.id;
+				row.querySelector(".food-query").value = food.name;
+				row.querySelector(".food-results").hidden = true;
+				row.querySelector(".food-query").setAttribute("aria-expanded", "false");
+				row.querySelector(".food-reference").innerHTML = `${escapeHtml(food.portion)} · ${numberFormat.format(food.referenceAmount)} g/ml <a class="source-link" href="manual-contagem-carboidratos-web-1.pdf#page=${food.sourcePage}" target="_blank" rel="noopener" aria-label="Ver página ${food.sourcePage} do manual">Fonte p. ${food.sourcePage}</a>`;
+				calculateMeal();
+			}
+
+			function calculateRow(row) {
+				const food = foods.find(item => item.id === row.dataset.foodId);
+				const quantity = Number(row.querySelector(".food-quantity").value);
+				const mode = row.querySelector('input[type="radio"]:checked')?.value || "portion";
+				const output = row.querySelector(".food-carbs");
+				if (!food || !Number.isFinite(quantity) || quantity <= 0) {
+					output.textContent = "— g CHO";
+					return null;
+				}
+				const carbohydrates = mode === "grams"
+					? quantity * food.carbohydrates / food.referenceAmount
+					: quantity * food.carbohydrates;
+				output.textContent = `${numberFormat.format(carbohydrates)} g CHO`;
+				row.querySelector(".food-quantity").setAttribute("aria-label", `Quantidade em ${mode === "grams" ? "gramas" : "porções"} de ${food.name}`);
+				return { carbohydrates };
+			}
+
+			function calculateMeal() {
+				let total = 0;
+				let selected = 0;
+				for (const row of rows.children) {
+					const result = calculateRow(row);
+					if (result) {
+						selected++;
+						total += result.carbohydrates;
+					}
+				}
+				document.getElementById("meal-total").textContent = numberFormat.format(total);
+				document.getElementById("meal-status").textContent = selected ? `${selected} alimento${selected === 1 ? "" : "s"} contado${selected === 1 ? "" : "s"}` : "Adicione alimentos para calcular.";
+				document.getElementById("save-meal").disabled = selected === 0;
+			}
+
+			function collectMealFoods() {
+				const selectedFoods = [];
+				for (const row of rows.children) {
+					const food = foods.find(item => item.id === row.dataset.foodId);
+					if (!food) continue;
+					const quantity = Number(row.querySelector(".food-quantity").value);
+					const mode = row.querySelector('input[type="radio"]:checked')?.value || "portion";
+					if (!Number.isFinite(quantity) || quantity <= 0) return null;
+					const carbohydrates = mode === "grams" ? quantity * food.carbohydrates / food.referenceAmount : quantity * food.carbohydrates;
+					selectedFoods.push({
+						foodId: food.id,
+						name: food.name,
+						portion: food.portion,
+						referenceAmount: food.referenceAmount,
+						carbohydratesPerReference: food.carbohydrates,
+						sourcePage: food.sourcePage,
+						quantity,
+						mode,
+						carbohydrates
+					});
+				}
+				return selectedFoods;
+			}
+
+			function formatMealDate(value) {
+				const date = new Date(value);
+				if (Number.isNaN(date.getTime())) return "Data não informada";
+				return new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(date);
+			}
+
+			function renderMealHistory() {
+				const historyElement = document.getElementById("meal-history");
+				const sortedMeals = [...mealHistory].sort((a, b) => new Date(b.consumedAt) - new Date(a.consumedAt));
+				document.getElementById("history-count").textContent = `${sortedMeals.length} ${sortedMeals.length === 1 ? "refeição" : "refeições"}`;
+				if (!sortedMeals.length) {
+					historyElement.innerHTML = `<div class="history-empty">As refeições salvas neste dispositivo aparecerão aqui.</div>`;
+					return;
+				}
+				historyElement.innerHTML = sortedMeals.map(meal => {
+					const foodLines = meal.foods.map(food => {
+						const amount = food.mode === "grams" ? `${numberFormat.format(food.quantity)} g` : `${numberFormat.format(food.quantity)} ${food.quantity === 1 ? "porção" : "porções"}`;
+						return `<li>${escapeHtml(food.name)} — ${amount}, ${numberFormat.format(food.carbohydrates)} g CHO</li>`;
+					}).join("");
+					return `<article class="history-entry" data-meal-id="${escapeHtml(meal.id)}"><div><h3>Refeição</h3><p class="history-meta">${escapeHtml(formatMealDate(meal.consumedAt))} · ${meal.foods.length} ${meal.foods.length === 1 ? "alimento" : "alimentos"}</p><ul class="history-foods">${foodLines}</ul></div><div><strong class="history-total">${numberFormat.format(meal.total)} g CHO</strong><div class="history-actions"><button class="icon-button" type="button" data-history-action="edit" data-meal-id="${escapeHtml(meal.id)}" aria-label="Editar refeição de ${escapeHtml(formatMealDate(meal.consumedAt))}" title="Editar refeição"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m14 5 5 5M4 20l4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="icon-button" type="button" data-history-action="repeat" data-meal-id="${escapeHtml(meal.id)}" aria-label="Repetir refeição de ${escapeHtml(formatMealDate(meal.consumedAt))}" title="Repetir refeição"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h12a4 4 0 0 1 4 4v1m-4-8 4 4-4 4M20 17H8a4 4 0 0 1-4-4v-1m4 8-4-4 4-4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="icon-button" type="button" data-history-action="delete" data-meal-id="${escapeHtml(meal.id)}" aria-label="Excluir refeição de ${escapeHtml(formatMealDate(meal.consumedAt))}" title="Excluir refeição"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16m-10 4v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div></article>`;
+				}).join("");
+			}
+
+			function saveMeal() {
+				const mealFoods = collectMealFoods();
+				if (mealFoods === null) {
+					document.getElementById("meal-status").textContent = "Confira a quantidade dos alimentos selecionados.";
+					return;
+				}
+				if (!mealFoods.length) {
+					document.getElementById("meal-status").textContent = "Selecione ao menos um alimento para salvar.";
+					return;
+				}
+				const existingIndex = editingMealId ? mealHistory.findIndex(meal => meal.id === editingMealId) : -1;
+				if (editingMealId && existingIndex < 0) {
+					editingMealId = null;
+					document.getElementById("meal-status").textContent = "Esta refeição não está mais no histórico. Salve novamente para criar uma nova entrada.";
+					return;
+				}
+				const oldHistory = mealHistory;
+				const existing = existingIndex >= 0 ? mealHistory[existingIndex] : null;
+				const meal = {
+					id: existing?.id || crypto.randomUUID(),
+					consumedAt: existing?.consumedAt || new Date().toISOString(),
+					updatedAt: new Date().toISOString(),
+					foods: mealFoods,
+					total: mealFoods.reduce((sum, food) => sum + food.carbohydrates, 0)
+				};
+				mealHistory = [...mealHistory];
+				if (existingIndex >= 0) mealHistory[existingIndex] = meal;
+				else mealHistory.unshift(meal);
+				try { localStorage.setItem(HISTORY_KEY, JSON.stringify(mealHistory)); }
+				catch {
+					mealHistory = oldHistory;
+					document.getElementById("meal-status").textContent = "Não foi possível salvar o histórico neste dispositivo.";
+					return;
+				}
+				editingMealId = null;
+				document.getElementById("save-meal").textContent = "Salvar refeição";
+				renderMealHistory();
+				clearMealDraft();
+				document.getElementById("meal-status").textContent = existing ? "Refeição atualizada no histórico." : "Refeição salva no histórico.";
+			}
+
+			function clearMealDraft() {
+				editingMealId = null;
+				rows.innerHTML = "";
+				addRow();
+				document.getElementById("save-meal").textContent = "Salvar refeição";
+			}
+
+			function loadMealIntoCalculator(meal, edit) {
+				if (!meal || !Array.isArray(meal.foods) || !meal.foods.length || meal.foods.length > MAX_FOODS) return;
+				rows.innerHTML = "";
+				for (const savedFood of meal.foods) {
+					const food = foods.find(item => item.id === savedFood.foodId);
+					if (!food) continue;
+					const rowId = String(nextRowId++);
+					const fragment = document.getElementById("food-row-template").content.cloneNode(true);
+					const row = fragment.querySelector(".food-row");
+					row.dataset.rowId = rowId;
+					for (const radio of row.querySelectorAll('input[type="radio"]')) radio.name = `unit-${rowId}`;
+					rows.append(fragment);
+					chooseFood(row, food);
+					row.querySelector(".food-quantity").value = String(savedFood.quantity);
+					row.querySelector(`input[name="unit-${rowId}"][value="${savedFood.mode}"]`).checked = true;
+				}
+				if (!rows.children.length) {
+					addRow();
+					document.getElementById("meal-status").textContent = "Os alimentos desta refeição não estão mais disponíveis na tabela atual.";
+					return;
+				}
+				editingMealId = edit ? meal.id : null;
+				document.getElementById("save-meal").textContent = edit ? "Atualizar refeição" : "Salvar como nova refeição";
+				updateRowControls();
+				calculateMeal();
+				rows.scrollIntoView({ behavior: "smooth", block: "start" });
+			}
+
+			rows.addEventListener("input", event => {
+				const row = event.target.closest(".food-row");
+				if (!row) return;
+				if (event.target.matches(".food-query")) {
+					delete row.dataset.foodId;
+					row.querySelector(".food-reference").textContent = "Escolha um alimento do manual.";
+					renderMatches(row, event.target.value);
+				}
+				calculateMeal();
+			});
+
+			rows.addEventListener("change", event => {
+				if (event.target.matches('input[type="radio"]')) calculateMeal();
+			});
+
+			rows.addEventListener("click", event => {
+				const option = event.target.closest(".food-option");
+				if (option) {
+					const row = option.closest(".food-row");
+					const food = foods.find(item => item.id === option.dataset.foodId);
+					if (row && food) chooseFood(row, food);
+					return;
+				}
+				const remove = event.target.closest(".remove-food");
+				if (remove && rows.children.length > 1) {
+					remove.closest(".food-row").remove();
+					updateRowControls();
+					calculateMeal();
+				}
+			});
+
+			rows.addEventListener("keydown", event => {
+				if (event.key === "Escape") {
+					const input = event.target.closest(".food-query");
+					if (input) {
+						input.closest(".food-row").querySelector(".food-results").hidden = true;
+						input.setAttribute("aria-expanded", "false");
+					}
+				}
+				if (event.key === "Enter" && event.target.matches(".food-query")) {
+					const firstOption = event.target.closest(".food-search").querySelector(".food-option");
+					if (firstOption) {
+						event.preventDefault();
+						firstOption.click();
+					}
+				}
+			});
+
+			document.addEventListener("click", event => {
+				if (event.target.closest(".food-search")) return;
+				for (const row of rows.children) {
+					row.querySelector(".food-results").hidden = true;
+					row.querySelector(".food-query").setAttribute("aria-expanded", "false");
+				}
+			});
+
+			document.getElementById("add-food").addEventListener("click", addRow);
+			document.getElementById("save-meal").addEventListener("click", saveMeal);
+			document.getElementById("clear-meal").addEventListener("click", () => {
+				clearMealDraft();
+				document.getElementById("meal-status").textContent = "Refeição limpa.";
+			});
+			document.getElementById("meal-history").addEventListener("click", event => {
+				const button = event.target.closest("[data-history-action]");
+				if (!button) return;
+				const meal = mealHistory.find(item => item.id === button.dataset.mealId);
+				if (!meal) return;
+				if (button.dataset.historyAction === "edit") {
+					loadMealIntoCalculator(meal, true);
+					document.getElementById("meal-status").textContent = "Editando refeição do histórico.";
+				}
+				if (button.dataset.historyAction === "repeat") {
+					loadMealIntoCalculator(meal, false);
+					document.getElementById("meal-status").textContent = "Repetição carregada. Salve para registrar outra ocorrência.";
+				}
+				if (button.dataset.historyAction === "delete" && window.confirm("Excluir esta refeição do histórico?")) {
+					const oldHistory = mealHistory;
+					mealHistory = mealHistory.filter(item => item.id !== meal.id);
+					try { localStorage.setItem(HISTORY_KEY, JSON.stringify(mealHistory)); }
+					catch {
+						mealHistory = oldHistory;
+						document.getElementById("meal-status").textContent = "Não foi possível atualizar o histórico neste dispositivo.";
+						return;
+					}
+					if (editingMealId === meal.id) clearMealDraft();
+					renderMealHistory();
+					document.getElementById("meal-status").textContent = "Refeição excluída do histórico.";
+				}
+			});
+
+			syncAccessibilityControls();
+			if (!foods.length) {
+				document.getElementById("meal-status").textContent = "Não foi possível carregar a tabela local de alimentos.";
+				document.getElementById("add-food").disabled = true;
+			}
+			renderMealHistory();
+			addRow();
+		})();
+	</script>
+</body>
+</html>

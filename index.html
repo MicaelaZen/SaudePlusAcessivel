@@ -1,0 +1,1069 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f1">
+  <meta name="description" content="Seu cuidado, organizado de um jeito mais acessível.">
+  <title>Cuidar+ Acessível</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f6f1;
+      --surface: #fff;
+      --ink: #202c29;
+      --muted: #687572;
+      --line: #e4e9e4;
+      --green: #176b57;
+      --green-dark: #104f42;
+      --green-pale: #e6f2ed;
+      --coral: #c9573d;
+      --coral-pale: #fff0e9;
+      --yellow: #f3c760;
+      --form-title: #101c18;
+      --shadow: 0 18px 50px rgba(36, 57, 50, .08);
+      --scale: 1;
+      font-size: calc(16px * var(--scale));
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: "DM Sans", sans-serif; line-height: 1.5; }
+    button, input, select, textarea { font: inherit; }
+    button { color: inherit; }
+    button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid #e59a43; outline-offset: 3px; }
+    .skip-link { position: fixed; top: -60px; left: 16px; z-index: 20; padding: 12px 16px; background: var(--ink); color: #fff; border-radius: 8px; }
+    .skip-link:focus { top: 12px; }
+    .shell { min-height: 100vh; }
+    .sidebar { position: fixed; inset: 0 auto 0 0; width: 250px; display: flex; flex-direction: column; padding: 28px 18px 20px; background: #fff; border-right: 1px solid var(--line); z-index: 5; }
+    .brand { display: flex; gap: 11px; align-items: center; padding: 0 10px 32px; }
+    .brand-mark { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 14px 14px 14px 4px; background: var(--green); color: #fff; }
+    .brand-name { font: 800 19px/1.1 Manrope, sans-serif; letter-spacing: 0; }
+    .brand-name span { color: var(--green); }
+    .brand-caption { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .nav-label { margin: 0 10px 9px; color: #89938f; font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    .nav-list { display: grid; gap: 5px; }
+    .nav-button { width: 100%; min-height: 48px; display: flex; align-items: center; gap: 12px; border: 0; border-radius: 9px; padding: 0 13px; background: transparent; color: #596561; text-align: left; cursor: pointer; }
+    .nav-button:hover { background: #f5f7f4; }
+    .nav-button[aria-current="page"] { color: var(--green-dark); background: var(--green-pale); font-weight: 700; }
+    .nav-button svg { flex: 0 0 auto; }
+    .sidebar-spacer { flex: 1; }
+    .access-panel { margin: 10px 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
+    .access-title { margin: 0 0 10px; font-size: 12px; font-weight: 700; }
+    .access-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .access-row + .access-row { margin-top: 9px; }
+    .access-row span { color: var(--muted); font-size: 12px; }
+    .mobile-access { display: none; }
+    .access-flyout { position: absolute; top: 54px; right: 16px; z-index: 8; width: 238px; padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: var(--shadow); }
+    .mini-controls { display: flex; gap: 4px; }
+    .icon-button, .mini-button { display: inline-grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 8px; background: #fff; cursor: pointer; }
+    .mini-button { width: 30px; height: 30px; font-size: 13px; font-weight: 700; }
+    .icon-button:hover, .mini-button:hover { border-color: var(--green); color: var(--green); }
+    .mini-button[aria-pressed="true"] { border-color: var(--green); color: var(--green-dark); background: var(--green-pale); }
+    .sidebar-note { padding: 12px 10px 0; color: #818b86; font-size: 11px; }
+    .main-area { margin-left: 250px; min-height: 100vh; }
+    .topbar { position: relative; height: 76px; display: flex; align-items: center; justify-content: flex-end; gap: 14px; padding: 0 clamp(20px, 4vw, 56px); border-bottom: 1px solid var(--line); background: rgba(255,255,255,.62); }
+    .local-indicator { margin-right: auto; display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 12px; }
+    .local-indicator i { width: 7px; height: 7px; border-radius: 50%; background: #4ca783; }
+    .profile-button { display: flex; align-items: center; gap: 10px; border: 0; background: transparent; cursor: pointer; text-align: left; }
+    .avatar { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: #f1d7c4; color: #5a392d; font-weight: 700; }
+    .profile-button strong { display: block; font-size: 13px; }
+    .profile-button small { display: block; color: var(--muted); font-size: 11px; }
+    .content { width: min(1160px, 100%); margin: 0 auto; padding: 38px clamp(20px, 4vw, 56px) 64px; }
+    .eyebrow { margin: 0 0 8px; color: var(--green); font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 { font-family: Manrope, sans-serif; letter-spacing: 0; }
+    h1 { margin-bottom: 9px; font-size: clamp(27px, 3vw, 36px); line-height: 1.18; }
+    h2 { margin-bottom: 8px; font-size: 21px; }
+    h3 { margin-bottom: 6px; font-size: 15px; }
+    .muted { color: var(--muted); }
+    .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 26px; }
+    .page-heading p { margin-bottom: 0; color: var(--muted); }
+    .button { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 8px; padding: 0 16px; font-weight: 700; cursor: pointer; transition: transform .15s, background .15s; }
+    .button:hover { transform: translateY(-1px); }
+    .button-primary { background: var(--green); color: #fff; }
+    .button-primary:hover { background: var(--green-dark); }
+    .button-secondary { border-color: var(--line); background: #fff; }
+    .button-secondary:hover { border-color: var(--green); }
+    .button-danger { color: #a53b2c; background: var(--coral-pale); }
+    .welcome-card { position: relative; overflow: hidden; display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 18px; min-height: 205px; margin-bottom: 22px; padding: 30px 34px; border-radius: 14px; background: #dcefe5; }
+    .welcome-card:after { content: ""; position: absolute; width: 280px; height: 280px; top: -140px; right: 5%; border: 1px solid rgba(23,107,87,.12); border-radius: 50%; box-shadow: 0 0 0 28px rgba(23,107,87,.04), 0 0 0 58px rgba(23,107,87,.035); pointer-events: none; }
+    .welcome-copy { position: relative; z-index: 1; }
+    .welcome-copy h2 { max-width: 430px; margin-bottom: 8px; font-size: 25px; }
+    .welcome-copy p { max-width: 440px; margin-bottom: 18px; color: #50665d; }
+    .welcome-art { position: relative; z-index: 1; justify-self: center; width: 126px; height: 126px; display: grid; place-items: center; border: 1px solid rgba(23,107,87,.14); border-radius: 50%; background: rgba(255,255,255,.48); color: var(--green); }
+    .welcome-art:before { content: "+"; position: absolute; right: 0; top: 4px; width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: var(--yellow); color: var(--ink); font-size: 22px; font-weight: 600; }
+    .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 30px; }
+    .stat-card { display: flex; align-items: center; gap: 13px; padding: 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+    .stat-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 10px; color: var(--green); background: var(--green-pale); }
+    .stat-card:nth-child(2) .stat-icon { color: #b6553c; background: var(--coral-pale); }
+    .stat-card:nth-child(3) .stat-icon { color: #8c681a; background: #fff4d8; }
+    .stat-number { font: 800 21px/1.1 Manrope, sans-serif; }
+    .stat-label { margin-top: 4px; color: var(--muted); font-size: 12px; }
+    .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+    .section-head h2 { margin: 0; }
+    .text-button { border: 0; padding: 6px 0; background: transparent; color: var(--green); font-weight: 700; cursor: pointer; }
+    .quick-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px; margin-bottom: 30px; }
+    .quick-card { min-height: 142px; display: flex; flex-direction: column; align-items: flex-start; justify-content: space-between; padding: 17px; border: 1px solid var(--line); border-radius: 10px; background: #fff; cursor: pointer; text-align: left; transition: border .15s, transform .15s; }
+    .quick-card:hover { transform: translateY(-2px); border-color: #9bc7b6; }
+    .quick-card .quick-icon { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 10px; color: var(--green); background: var(--green-pale); }
+    .quick-card:nth-child(2) .quick-icon { color: #b6553c; background: var(--coral-pale); }
+    .quick-card:nth-child(3) .quick-icon { color: #8c681a; background: #fff4d8; }
+    .quick-card:nth-child(4) .quick-icon { color: #46728a; background: #e7f1f6; }
+    .quick-card strong { font-size: 14px; }
+    .quick-card small { color: var(--muted); font-size: 11px; }
+    .lower-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 16px; }
+    .panel { padding: 20px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    .panel .section-head { margin-bottom: 16px; }
+    .empty-state { padding: 22px 12px; color: var(--muted); text-align: center; font-size: 13px; }
+    .empty-state svg { margin-bottom: 8px; color: #87958f; }
+    .record-list { display: grid; gap: 0; }
+    .record-row { display: flex; align-items: flex-start; gap: 12px; padding: 13px 0; border-top: 1px solid var(--line); }
+    .record-row:first-child { padding-top: 0; border-top: 0; }
+    .record-dot { width: 9px; height: 9px; flex: 0 0 auto; margin-top: 6px; border-radius: 50%; background: var(--green); }
+    .record-details { flex: 1; min-width: 0; }
+    .record-details strong { display: block; font-size: 13px; }
+    .record-details small { display: block; margin-top: 3px; color: var(--muted); font-size: 12px; }
+    .record-actions { display: flex; gap: 4px; }
+    .record-actions .icon-button { width: 32px; height: 32px; }
+    .tag { display: inline-flex; align-items: center; gap: 5px; border-radius: 99px; padding: 5px 9px; color: var(--green-dark); background: var(--green-pale); font-size: 11px; font-weight: 700; }
+    .tag-warm { color: #8e4b23; background: #fff0df; }
+    .screen[hidden], [hidden] { display: none !important; }
+    .list-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 24px 0 14px; }
+    .list-toolbar h2 { margin: 0; }
+    .full-list { display: grid; gap: 10px; }
+    .full-record { display: flex; align-items: flex-start; gap: 15px; padding: 17px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+    .record-symbol { flex: 0 0 auto; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px; background: var(--green-pale); color: var(--green); }
+    .full-record .record-details strong { font-size: 15px; }
+    .full-record .record-details p { margin: 6px 0 0; color: var(--muted); font-size: 13px; white-space: pre-wrap; }
+    .caregiver-layout { display: grid; grid-template-columns: 1fr .8fr; gap: 16px; margin-top: 24px; }
+    .code-box { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin: 16px 0; padding: 16px; border: 1px dashed #8fbaaa; border-radius: 9px; background: #f3faf6; }
+    .share-code { font: 800 25px Manrope, sans-serif; letter-spacing: .15em; color: var(--green-dark); }
+    .notice { display: flex; gap: 10px; padding: 13px; border-radius: 8px; color: #735a1d; background: #fff6dc; font-size: 12px; }
+    .note-form { display: grid; gap: 10px; margin-top: 14px; }
+    label { display: grid; gap: 6px; color: #3e4c47; font-size: 13px; font-weight: 600; }
+    input, select, textarea { width: 100%; min-height: 44px; border: 1px solid #dce3dd; border-radius: 7px; padding: 10px 12px; background: #fff; color: var(--ink); }
+    textarea { min-height: 92px; resize: vertical; }
+    .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .field-grid .wide { grid-column: 1 / -1; }
+    .form-stack { display: grid; gap: 15px; }
+    .choice-group { min-width: 0; margin: 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: 8px; }
+    .choice-group legend { padding: 0 4px; color: var(--form-title); font-size: 13px; font-weight: 700; }
+    .choice-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 14px; }
+    .choice-option { display: flex; align-items: flex-start; gap: 8px; color: var(--ink); font-size: 13px; font-weight: 500; cursor: pointer; }
+    .choice-option input { width: 18px; min-height: 18px; flex: 0 0 auto; margin: 1px 0 0; accent-color: var(--green); }
+    .profile-summary { margin: -4px 0 10px !important; font-weight: 600; }
+    .checkbox-row { display: flex; align-items: flex-start; gap: 9px; color: var(--muted); font-size: 13px; font-weight: 400; }
+    .checkbox-row input { width: 18px; min-height: 18px; margin: 2px 0 0; accent-color: var(--green); }
+    .onboarding-wrap { max-width: 760px; margin: 4vh auto; }
+    .onboarding-wrap .welcome-card { margin-bottom: 18px; }
+    .onboarding-form { padding: 23px; border: 1px solid var(--line); border-radius: 12px; background: #fff; }
+    .onboarding-form h2, .modal-head h2 { color: var(--form-title); font-weight: 800; }
+    .onboarding-form h2 { margin-bottom: 18px; }
+    .modal-backdrop { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; padding: 18px; background: rgba(25,39,34,.48); }
+    .modal { width: min(560px, 100%); max-height: min(90vh, 800px); overflow-y: auto; border-radius: 12px; background: #fff; box-shadow: var(--shadow); }
+    .modal-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; padding: 20px 22px 14px; border-bottom: 1px solid var(--line); }
+    .modal-head h2 { margin: 0; }
+    .modal-body { padding: 20px 22px 22px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 9px; margin-top: 19px; }
+    .toast { position: fixed; right: 20px; bottom: 20px; z-index: 15; max-width: min(420px, calc(100% - 40px)); padding: 13px 17px; border-radius: 8px; color: #fff; background: var(--ink); box-shadow: var(--shadow); font-size: 14px; }
+    .mobile-nav { display: none; }
+    .contrast { --paper: #fff; --surface: #fff; --ink: #000; --muted: #252525; --line: #555; --green: #005541; --green-dark: #003e31; --green-pale: #dff9ef; --coral: #8b1600; --coral-pale: #ffebe6; --form-title: #000; }
+    .contrast .welcome-card { background: #dff9ef; }
+    .dark-mode {
+      color-scheme: dark;
+      --paper: #171d1b;
+      --surface: #222b28;
+      --ink: #f1f5f2;
+      --muted: #bac6c0;
+      --line: #3b4943;
+      --green: #78c9a8;
+      --green-dark: #a1e2c4;
+      --green-pale: #293f36;
+      --coral: #ff9b83;
+      --coral-pale: #482d28;
+      --yellow: #f3c760;
+      --form-title: #f7fffb;
+      --shadow: 0 18px 50px rgba(0, 0, 0, .3);
+    }
+    .dark-mode .sidebar, .dark-mode .panel, .dark-mode .quick-card, .dark-mode .full-record,
+    .dark-mode .onboarding-form, .dark-mode .modal, .dark-mode .access-flyout,
+    .dark-mode .icon-button, .dark-mode .mini-button, .dark-mode .button-secondary,
+    .dark-mode input, .dark-mode select, .dark-mode textarea { background: var(--surface); color: var(--ink); }
+    .dark-mode .topbar { background: rgba(34, 43, 40, .94); }
+    .dark-mode .mobile-nav { background: rgba(34, 43, 40, .98); }
+    .dark-mode .welcome-card { background: #263d34; }
+    .dark-mode .welcome-copy p { color: #c3d5cb; }
+    .dark-mode .nav-button { color: var(--muted); }
+    .dark-mode .nav-button:hover { background: #2b3732; }
+    .dark-mode .nav-button[aria-current="page"] { color: #b5efd2; background: #2a493a; }
+    .dark-mode .sidebar-note, .dark-mode .nav-label { color: var(--muted); }
+    .dark-mode .code-box { border-color: #557a68; background: #263d34; }
+    .dark-mode .notice { color: #f5d991; background: #423923; }
+    .dark-mode .avatar { color: #fff0e5; background: #765341; }
+    .dark-mode.contrast { --paper: #000; --surface: #000; --ink: #fff; --muted: #fff; --line: #fff; --green: #8cffc3; --green-dark: #aaffd2; --green-pale: #173b2b; --coral: #ffad99; --coral-pale: #421a12; --form-title: #fff; }
+    .dark-mode.contrast .welcome-card { background: #173b2b; }
+    @media (max-width: 1060px) {
+      .sidebar { width: 218px; }
+      .main-area { margin-left: 218px; }
+      .quick-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 760px) {
+      .sidebar { display: none; }
+      .main-area { margin-left: 0; padding-bottom: 75px; }
+      .topbar { height: 62px; padding: 0 18px; }
+      .mobile-access { display: block; position: relative; }
+      .access-flyout { top: 48px; right: -54px; }
+      .content { padding: 26px 18px 34px; }
+      .local-indicator { font-size: 11px; }
+      .local-indicator span { display: none; }
+      .profile-button { gap: 7px; }
+      .profile-button small { display: none; }
+      .page-heading { align-items: flex-start; }
+      .page-heading .button { min-height: 40px; padding: 0 11px; font-size: 12px; }
+      .welcome-card { grid-template-columns: 1fr 74px; min-height: 190px; padding: 22px; }
+      .welcome-art { width: 68px; height: 68px; }
+      .welcome-art svg { width: 38px; }
+      .welcome-art:before { top: -4px; right: -5px; width: 27px; height: 27px; }
+      .welcome-copy h2 { font-size: 21px; }
+      .welcome-copy p { font-size: 13px; }
+      .stat-grid { gap: 8px; }
+      .stat-card { align-items: flex-start; gap: 8px; padding: 11px 9px; }
+      .stat-icon { width: 32px; height: 32px; }
+      .stat-number { font-size: 17px; }
+      .stat-label { font-size: 10px; }
+      .quick-grid { gap: 9px; }
+      .quick-card { min-height: 124px; padding: 13px; }
+      .lower-grid, .caregiver-layout { grid-template-columns: 1fr; }
+      .mobile-nav { position: fixed; inset: auto 0 0; z-index: 6; display: grid; grid-template-columns: repeat(7, 1fr); padding: 7px 5px max(7px, env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: rgba(255,255,255,.97); }
+      .mobile-nav .nav-button { min-height: 53px; flex-direction: column; justify-content: center; gap: 3px; padding: 4px 2px; border-radius: 7px; font-size: 9px; }
+      .mobile-nav .nav-button svg { width: 19px; height: 19px; }
+      .onboarding-wrap { margin: 0; }
+    }
+    @media (max-width: 430px) {
+      .field-grid { grid-template-columns: 1fr; }
+      .field-grid .wide { grid-column: auto; }
+      .choice-options { grid-template-columns: 1fr; }
+      .welcome-card { grid-template-columns: 1fr; }
+      .welcome-art { display: none; }
+      .page-heading { flex-direction: column; }
+      .page-heading .button { align-self: flex-start; }
+      .stat-card { display: block; }
+      .stat-icon { margin-bottom: 8px; }
+      .code-box { align-items: flex-start; flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *:before, *:after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Pular para o conteúdo</a>
+  <div class="shell" id="app-shell">
+    <aside class="sidebar" aria-label="Navegação principal">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><svg width="23" height="23" viewBox="0 0 24 24" fill="none"><path d="M12 20s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 10c0 5.65-7 10-7 10Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 8v7m-3.5-3.5h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div><div class="brand-name">cuidar<span>+</span></div><div class="brand-caption">saúde no seu ritmo</div></div>
+      </div>
+      <p class="nav-label">Seu espaço</p>
+      <nav class="nav-list" id="desktop-nav"></nav>
+      <div class="sidebar-spacer"></div>
+      <div class="access-panel" aria-label="Acessibilidade">
+        <p class="access-title">Acessibilidade</p>
+        <div class="access-row"><span>Tamanho do texto</span><div class="mini-controls"><button class="mini-button" data-action="font-down" aria-label="Diminuir tamanho da fonte">A−</button><button class="mini-button" data-action="font-up" aria-label="Aumentar tamanho da fonte">A+</button></div></div>
+        <div class="access-row"><span>Alto contraste</span><button class="mini-button" data-action="contrast" aria-pressed="false" aria-label="Ativar alto contraste">◐</button></div>
+        <div class="access-row"><span>Modo noturno</span><button class="mini-button" data-action="dark-mode" aria-pressed="false" aria-label="Ativar modo noturno">☾</button></div>
+        <div class="access-row"><span>Ouvir esta tela</span><button class="mini-button" data-action="speak" aria-pressed="false" aria-label="Ler conteúdo em voz alta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 4a5 5 0 0 1 0 6m3-9a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+      </div>
+      <div class="sidebar-note">Seus dados ficam salvos neste dispositivo.</div>
+    </aside>
+    <div class="main-area">
+      <header class="topbar">
+        <div class="local-indicator"><i aria-hidden="true"></i><span>Dados salvos neste dispositivo</span></div>
+        <div class="mobile-access">
+          <button class="icon-button" data-action="access-menu" aria-label="Abrir opções de acessibilidade" aria-expanded="false" aria-controls="mobile-access-panel">Aa</button>
+          <div class="access-flyout" id="mobile-access-panel" hidden>
+            <p class="access-title">Acessibilidade</p>
+            <div class="access-row"><span>Tamanho do texto</span><div class="mini-controls"><button class="mini-button" data-action="font-down" aria-label="Diminuir tamanho da fonte">A−</button><button class="mini-button" data-action="font-up" aria-label="Aumentar tamanho da fonte">A+</button></div></div>
+            <div class="access-row"><span>Alto contraste</span><button class="mini-button" data-action="contrast" aria-pressed="false" aria-label="Ativar alto contraste">◐</button></div>
+            <div class="access-row"><span>Modo noturno</span><button class="mini-button" data-action="dark-mode" aria-pressed="false" aria-label="Ativar modo noturno">☾</button></div>
+            <div class="access-row"><span>Ouvir esta tela</span><button class="mini-button" data-action="speak" aria-pressed="false" aria-label="Ler conteúdo em voz alta"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 4a5 5 0 0 1 0 6m3-9a9 9 0 0 1 0 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
+          </div>
+        </div>
+        <button class="profile-button" data-action="edit-profile" aria-label="Editar perfil">
+          <span class="avatar" id="top-avatar">?</span><span><strong id="top-name">Seu perfil</strong><small id="top-condition">Complete seu cadastro</small></span>
+        </button>
+      </header>
+      <main class="content" id="main-content" tabindex="-1">
+        <section class="screen" id="screen-onboarding" aria-labelledby="onboarding-title" hidden>
+          <div class="onboarding-wrap">
+            <div class="welcome-card">
+              <div class="welcome-copy"><p class="eyebrow">Bem-vinda ao Cuidar+</p><h2 id="onboarding-title">Seu cuidado merece um lugar só dele.</h2><p>Organize sua rotina de saúde com mais clareza, autonomia e acessibilidade.</p></div>
+              <div class="welcome-art" aria-hidden="true"><svg width="65" height="65" viewBox="0 0 64 64" fill="none"><path d="M32 54S11 41 11 24a12 12 0 0 1 21-8 12 12 0 0 1 21 8c0 17-21 30-21 30Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M32 23v19m-9.5-9.5h19" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+            </div>
+            <form class="onboarding-form" id="profile-form">
+              <p class="eyebrow">Comece por você</p><h2>Seu cadastro</h2>
+              <div class="form-stack">
+                <div class="field-grid">
+                  <label>Como podemos chamar você?<input name="name" required autocomplete="given-name" maxlength="60" placeholder="Seu nome"></label>
+                  <label>Sobrenome<input name="surname" required autocomplete="family-name" maxlength="80" placeholder="Seu sobrenome"></label>
+                  <label>E-mail<input name="email" type="email" required autocomplete="email" maxlength="254" placeholder="voce@exemplo.com"></label>
+                  <label>Celular<input name="phone" type="tel" autocomplete="tel" maxlength="24" inputmode="tel" placeholder="(11) 99999-9999"></label>
+                  <label>Data de nascimento<input name="birthDate" type="date" required autocomplete="bday"></label>
+                  <fieldset class="choice-group wide"><legend>Patologias e condições de saúde</legend><div class="choice-options">
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Diabetes tipo 1"><span>Diabetes tipo 1</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Diabetes tipo 2"><span>Diabetes tipo 2</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Hipertensão"><span>Hipertensão</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Hipotensão"><span>Hipotensão</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Depressão"><span>Depressão</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Asma"><span>Asma</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Doença cardiovascular"><span>Doença cardiovascular</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Doença renal crônica"><span>Doença renal crônica</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Epilepsia"><span>Epilepsia</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Artrite"><span>Artrite</span></label>
+                    <label class="choice-option"><input name="conditions" type="checkbox" value="Prefiro não informar"><span>Prefiro não informar</span></label>
+                  </div><label style="margin-top:12px">Outra patologia ou condição<input name="conditionOther" maxlength="120" placeholder="Opcional"></label></fieldset>
+                  <fieldset class="choice-group wide"><legend>Condições visuais</legend><div class="choice-options">
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Baixa visão"><span>Baixa visão</span></label>
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Cegueira"><span>Cegueira</span></label>
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Visão parcial"><span>Visão parcial</span></label>
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Visão monocular"><span>Visão monocular</span></label>
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Daltonismo"><span>Daltonismo</span></label>
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Fotofobia"><span>Fotofobia</span></label>
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Retinopatia"><span>Retinopatia</span></label>
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Sem deficiência visual"><span>Sem deficiência visual</span></label>
+                    <label class="choice-option"><input name="visualConditions" type="checkbox" value="Prefiro não informar"><span>Prefiro não informar</span></label>
+                  </div><label style="margin-top:12px">Outra condição visual<input name="visualOther" maxlength="120" placeholder="Opcional"></label></fieldset>
+                </div>
+                <label class="checkbox-row"><input name="terms" type="checkbox" required><span>Entendo que este protótipo não substitui orientação médica e que meus dados ficam apenas neste dispositivo.</span></label>
+                <button class="button button-primary" type="submit">Salvar e continuar <span aria-hidden="true">→</span></button>
+              </div>
+            </form>
+          </div>
+        </section>
+        <section class="screen" id="screen-home" aria-labelledby="home-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow" id="today-label">Seu resumo</p><h1 id="home-title">Olá, <span id="welcome-name">Micaela</span></h1><p class="profile-summary" id="profile-summary"></p><p>Um passo de cada vez. Seu cuidado está organizado aqui.</p></div><button class="button button-primary" data-action="add-exam"><span aria-hidden="true">＋</span> Novo registro</button></div>
+          <div class="welcome-card">
+            <div class="welcome-copy"><p class="eyebrow">Seu cuidado, com mais leveza</p><h2>Pequenos registros. Mais tranquilidade no dia a dia.</h2><p>Exames, consultas e medicamentos reunidos em um só lugar.</p><button class="button button-secondary" data-go="medications">Ver minha rotina <span aria-hidden="true">→</span></button></div>
+            <div class="welcome-art" aria-hidden="true"><svg width="65" height="65" viewBox="0 0 64 64" fill="none"><path d="M32 54S11 41 11 24a12 12 0 0 1 21-8 12 12 0 0 1 21 8c0 17-21 30-21 30Z" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M32 23v19m-9.5-9.5h19" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg></div>
+          </div>
+          <div class="stat-grid" id="stats"></div>
+          <div class="section-head"><h2>O que você precisa hoje?</h2></div>
+          <div class="quick-grid" id="quick-links"></div>
+          <div class="lower-grid">
+            <section class="panel" aria-labelledby="recent-title"><div class="section-head"><h2 id="recent-title">Atividade recente</h2><button class="text-button" data-go="exams">Ver tudo</button></div><div id="recent-list"></div></section>
+            <section class="panel" aria-labelledby="next-title"><div class="section-head"><h2 id="next-title">Próxima consulta</h2><button class="icon-button" data-action="add-appointment" aria-label="Adicionar consulta"><span aria-hidden="true">＋</span></button></div><div id="next-appointment"></div></section>
+          </div>
+        </section>
+        <section class="screen" id="screen-glucose" aria-labelledby="glucose-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Acompanhamento pessoal</p><h1 id="glucose-title">Glicemia capilar</h1><p>Registre seus resultados de dextro e acompanhe as medições.</p></div><button class="button button-primary" data-action="add-glucose"><span aria-hidden="true">＋</span> Registrar dextro</button></div>
+          <div class="lower-grid">
+            <section class="panel"><div class="section-head"><h2>Meus limites de alerta</h2><div class="mini-controls"><button class="button button-secondary" data-action="edit-glucose-range">Editar</button><button class="button button-secondary" data-action="clear-glucose-range" id="clear-glucose-range">Desativar</button></div></div><div id="glucose-range-summary"></div><div class="notice" style="margin-top:14px"><span aria-hidden="true">ⓘ</span><span>Estes limites são pessoais e servem somente para alertas. Defina-os com sua equipe de saúde; não são diagnóstico nem recomendação de tratamento.</span></div></section>
+            <section class="panel"><p class="eyebrow">Última medição</p><div id="glucose-latest"></div><button class="text-button" data-action="add-glucose" style="margin-top:12px">Registrar dextro</button></section>
+          </div>
+          <div class="section-head" style="margin-top:28px"><h2>Histórico de medições</h2></div><div class="full-list" id="glucose-list"></div>
+        </section>
+        <section class="screen" id="screen-blood-pressure" aria-labelledby="blood-pressure-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Acompanhamento pessoal</p><h1 id="blood-pressure-title">Pressão arterial</h1><p>Registre suas medições e acompanhe os resultados.</p></div><button class="button button-primary" data-action="add-blood-pressure"><span aria-hidden="true">＋</span> Registrar pressão</button></div>
+          <div class="lower-grid">
+            <section class="panel"><div class="section-head"><h2>Meus limites de alerta</h2><div class="mini-controls"><button class="button button-secondary" data-action="edit-pressure-range">Editar</button><button class="button button-secondary" data-action="clear-pressure-range" id="clear-pressure-range">Desativar</button></div></div><div id="pressure-range-summary"></div><div class="notice" style="margin-top:14px"><span aria-hidden="true">ⓘ</span><span>Configure seus limites sistólico e diastólico conforme orientação da equipe de saúde. Eles servem somente para alertas, não para diagnóstico nem recomendação de tratamento.</span></div></section>
+            <section class="panel"><p class="eyebrow">Última medição</p><div id="pressure-latest"></div><button class="text-button" data-action="add-blood-pressure" style="margin-top:12px">Registrar pressão</button></section>
+          </div>
+          <div class="section-head" style="margin-top:28px"><h2>Histórico de medições</h2></div><div class="full-list" id="pressure-list"></div>
+        </section>
+        <section class="screen" id="screen-exams" aria-labelledby="exams-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Histórico de saúde</p><h1 id="exams-title">Meus exames</h1><p>Resultados e observações em um só lugar.</p></div><button class="button button-primary" data-action="add-exam"><span aria-hidden="true">＋</span> Adicionar exame</button></div><div class="full-list" id="exam-list"></div>
+        </section>
+        <section class="screen" id="screen-medications" aria-labelledby="medications-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Rotina de cuidado</p><h1 id="medications-title">Meus medicamentos</h1><p>Confira horários e mantenha as informações à mão.</p></div><button class="button button-primary" data-action="add-medication"><span aria-hidden="true">＋</span> Adicionar</button></div><div class="notice" style="margin-bottom:16px"><span aria-hidden="true">ⓘ</span><span id="medication-notice">No navegador, os lembretes funcionam enquanto esta página está aberta.</span></div><div class="full-list" id="medication-list"></div>
+        </section>
+        <section class="screen" id="screen-appointments" aria-labelledby="appointments-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Acompanhamento</p><h1 id="appointments-title">Minhas consultas</h1><p>Se organize para chegar com calma e no horário.</p></div><button class="button button-primary" data-action="add-appointment"><span aria-hidden="true">＋</span> Adicionar consulta</button></div><div class="notice" style="margin-bottom:16px"><span aria-hidden="true">ⓘ</span><span>O link envia ao Google Agenda o médico, a especialidade, a data, o horário, o local e seu e-mail. Entre na sua conta e confirme para salvar; configure o alerta do Google no evento. O lembrete do Cuidar+ é independente.</span></div><div class="full-list" id="appointment-list"></div>
+        </section>
+        <section class="screen" id="screen-caregiver" aria-labelledby="caregiver-title" hidden>
+          <div class="page-heading"><div><p class="eyebrow">Rede de apoio</p><h1 id="caregiver-title">Área do cuidador</h1><p>Compartilhe informações importantes com quem cuida de você.</p></div></div>
+          <div class="caregiver-layout">
+            <section class="panel"><p class="eyebrow">Acesso de demonstração</p><h2>Um jeito simples de se organizar em conjunto.</h2><p class="muted">Gere um código para identificar seu acesso de cuidador neste protótipo.</p><div class="code-box"><strong class="share-code" id="care-code">------</strong><button class="button button-secondary" data-action="share-code"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="8" y="8" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" stroke="currentColor" stroke-width="1.8"/></svg>Copiar código</button></div><button class="button button-primary" data-action="new-code">Gerar código</button><p class="muted" style="font-size:12px;margin:14px 0 0">Neste protótipo, o código não compartilha dados entre dispositivos.</p></section>
+            <section class="panel"><p class="eyebrow">Anotações compartilhadas</p><h2>Recados de cuidado</h2><p class="muted">Deixe uma observação para você ou seu cuidador.</p><form class="note-form" id="care-note-form"><label>Nova observação<textarea name="note" required maxlength="500" placeholder="Escreva uma observação..."></textarea></label><button class="button button-primary" type="submit">Salvar observação</button></form><div id="care-notes" style="margin-top:16px"></div></section>
+          </div>
+          <div class="notice" style="margin-top:16px"><span aria-hidden="true">ⓘ</span><span>Para compartilhar dados de saúde com outra pessoa, esta área precisará de autenticação, consentimento e armazenamento seguro em um servidor.</span></div>
+        </section>
+      </main>
+    </div>
+    <nav class="mobile-nav" id="mobile-nav" aria-label="Navegação principal"></nav>
+  </div>
+  <div class="modal-backdrop" id="modal-backdrop" hidden><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-head"><h2 id="modal-title"></h2><button class="icon-button" data-action="close-modal" aria-label="Fechar janela">×</button></div><div class="modal-body" id="modal-body"></div></section></div>
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+  <script>
+    (() => {
+      const STORAGE_KEY = "cuidar-mais-v1";
+      const THEME_KEY = "cuidar-mais-theme";
+      const emptyState = { profile: null, exams: [], medications: [], appointments: [], glucose: [], glucoseRange: null, bloodPressure: [], bloodPressureRange: null, notes: [], caregiverCode: "" };
+      const toSelectionList = value => Array.isArray(value) ? value.filter(item => typeof item === "string" && item.trim()) : typeof value === "string" && value.trim() ? [value.trim()] : [];
+      function normalizeProfile(profile) {
+        if (!profile) return null;
+        return {
+          ...profile,
+          surname: profile.surname || "",
+          email: profile.email || "",
+          phone: profile.phone || "",
+          birthDate: profile.birthDate || "",
+          conditions: toSelectionList(profile.conditions ?? profile.condition),
+          conditionOther: profile.conditionOther || "",
+          visualConditions: toSelectionList(profile.visualConditions ?? profile.vision),
+          visualOther: profile.visualOther || ""
+        };
+      }
+      function calculateAge(birthDate) {
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(birthDate || "")) return null;
+        const date = new Date(`${birthDate}T12:00:00`);
+        const today = new Date();
+        if (Number.isNaN(date.getTime()) || date > today) return null;
+        let age = today.getFullYear() - date.getFullYear();
+        if (today.getMonth() < date.getMonth() || (today.getMonth() === date.getMonth() && today.getDate() < date.getDate())) age--;
+        return age >= 0 ? age : null;
+      }
+      let state;
+      try { state = { ...emptyState, ...JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}") }; }
+      catch { state = { ...emptyState }; }
+      state.profile = normalizeProfile(state.profile);
+      let activeScreen = state.profile ? "home" : "onboarding";
+      let toastTimer;
+      let speechChunks = [];
+      let speechGeneration = 0;
+      let speechActive = false;
+      const remindedToday = new Set();
+      const remindedAppointments = new Set();
+      const nativeAndroid = Boolean(window.AndroidReminders);
+      if (localStorage.getItem(THEME_KEY) === "dark") document.body.classList.add("dark-mode");
+      const icons = {
+        home: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-6v-7h-4v7H4a1 1 0 0 1-1-1V10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+        glucose: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3s6 6.2 6 11a6 6 0 1 1-12 0c0-4.8 6-11 6-11Z" stroke="currentColor" stroke-width="1.8"/><path d="M9 14h2l1.2-2.5 1.3 5L15 14h1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        "blood-pressure": '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2.65A4 4 0 0 1 19 11c0 5.65-7 10-7 10Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8 12h2l1-2 2 5 1-3h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        exams: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M7 3h8l4 4v14H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8"/><path d="M14 3v5h5M8 13h8m-8 4h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+        medications: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="m4.9 14.2 7.8-7.8a5 5 0 0 1 7.1 7.1L12 21.3a5 5 0 0 1-7.1-7.1Z" stroke="currentColor" stroke-width="1.8"/><path d="m8.4 10.7 7.1 7.1" stroke="currentColor" stroke-width="1.8"/></svg>',
+        appointments: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="16" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M16 3v4M8 3v4M3 10h18m-13 4h3m-3 3h7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+        caregiver: '<svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2m6-10a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm9-2v6m3-3h-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+      };
+      const navItems = [
+        ["home", "Início", "Início"], ["glucose", "Glicemia", "Glicemia"], ["blood-pressure", "Pressão arterial", "Pressão"], ["exams", "Exames", "Exames"], ["medications", "Medicamentos", "Meds"], ["appointments", "Consultas", "Agenda"], ["caregiver", "Cuidador", "Apoio"]
+      ];
+      const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+      const persist = () => localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      const dateFormat = value => {
+        if (!value) return "Data não informada";
+        const date = new Date(`${value}T12:00:00`);
+        return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat("pt-BR", { day: "numeric", month: "long", year: "numeric" }).format(date);
+      };
+      const shortDate = value => value ? new Intl.DateTimeFormat("pt-BR", { day: "2-digit", month: "short" }).format(new Date(`${value}T12:00:00`)) : "";
+      function toast(message) {
+        const element = document.getElementById("toast");
+        element.textContent = message;
+        element.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => { element.hidden = true; }, 3200);
+      }
+      function updateSpeechControls() {
+        document.querySelectorAll('[data-action="speak"]').forEach(control => {
+          control.setAttribute("aria-pressed", String(speechActive));
+          control.setAttribute("aria-label", speechActive ? "Parar leitura em voz alta" : "Ler conteúdo em voz alta");
+          control.title = speechActive ? "Parar leitura" : "Ouvir esta tela";
+        });
+      }
+      function appointmentTimestamp(appointment) {
+        if (!appointment?.date || !appointment?.time) return NaN;
+        return new Date(`${appointment.date}T${appointment.time}`).getTime();
+      }
+      function stopSpeech() {
+        speechGeneration++;
+        speechActive = false;
+        speechChunks = [];
+        if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+        updateSpeechControls();
+      }
+      function splitSpeechText(text, maxLength = 350) {
+        const remaining = text.replace(/\s+/g, " ").trim();
+        const chunks = [];
+        let rest = remaining;
+        while (rest.length > maxLength) {
+          let splitAt = rest.lastIndexOf(" ", maxLength);
+          if (splitAt < maxLength * 0.55) splitAt = maxLength;
+          chunks.push(rest.slice(0, splitAt).trim());
+          rest = rest.slice(splitAt).trim();
+        }
+        if (rest) chunks.push(rest);
+        return chunks;
+      }
+      function speakNextChunk(generation) {
+        if (!speechActive || generation !== speechGeneration) return;
+        const chunk = speechChunks.shift();
+        if (!chunk) {
+          speechActive = false;
+          updateSpeechControls();
+          return;
+        }
+        const utterance = new SpeechSynthesisUtterance(chunk);
+        utterance.lang = "pt-BR";
+        utterance.onend = () => speakNextChunk(generation);
+        utterance.onerror = event => {
+          if (generation !== speechGeneration) return;
+          speechActive = false;
+          speechChunks = [];
+          updateSpeechControls();
+          if (event.error !== "canceled" && event.error !== "interrupted") toast("Não foi possível continuar a leitura por voz.");
+        };
+        try { window.speechSynthesis.speak(utterance); }
+        catch {
+          speechActive = false;
+          speechChunks = [];
+          updateSpeechControls();
+          toast("Não foi possível iniciar a leitura por voz.");
+        }
+      }
+      window.androidReminderPermissionDenied = () => toast("Ative notificações e alarmes exatos nas configurações do Android para receber alertas com o app fechado.");
+      window.androidGlucoseNotificationPermissionDenied = () => toast("Permita notificações nas configurações do Android para receber alertas de glicemia.");
+      window.androidBloodPressureNotificationPermissionDenied = () => toast("Permita notificações nas configurações do Android para receber alertas de pressão arterial.");
+      function renderNav() {
+        const desktopHtml = navItems.map(([key, label]) => `<button class="nav-button" data-go="${key}" aria-current="${activeScreen === key ? "page" : "false"}">${icons[key]}<span>${label}</span></button>`).join("");
+        const mobileHtml = navItems.map(([key, label, shortLabel]) => `<button class="nav-button" data-go="${key}" aria-label="${label}" aria-current="${activeScreen === key ? "page" : "false"}">${icons[key]}<span>${shortLabel}</span></button>`).join("");
+        document.getElementById("desktop-nav").innerHTML = desktopHtml;
+        document.getElementById("mobile-nav").innerHTML = mobileHtml;
+      }
+      function updateProfile() {
+        const profile = state.profile;
+        const fullName = [profile?.name, profile?.surname].filter(Boolean).join(" ");
+        const age = calculateAge(profile?.birthDate);
+        document.getElementById("top-name").textContent = fullName || "Seu perfil";
+        document.getElementById("top-condition").textContent = age === null ? "Complete a data de nascimento" : `${age} anos`;
+        document.getElementById("top-avatar").textContent = profile?.name?.trim()?.[0]?.toUpperCase() || "?";
+        document.getElementById("welcome-name").textContent = profile?.name?.trim().split(/\s+/)[0] || "Micaela";
+        const conditions = [...(profile?.conditions || []), profile?.conditionOther].filter(Boolean);
+        const visualConditions = [...(profile?.visualConditions || []), profile?.visualOther].filter(Boolean);
+        const details = [...conditions, ...visualConditions].join(" · ");
+        document.getElementById("profile-summary").textContent = age === null
+          ? "Informe a data de nascimento no perfil para calcular sua idade."
+          : [ `${age} anos`, details ].filter(Boolean).join(" · ");
+        const today = new Intl.DateTimeFormat("pt-BR", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
+        document.getElementById("today-label").textContent = today;
+      }
+      function renderHome() {
+        const upcoming = state.appointments.filter(item => appointmentTimestamp(item) > Date.now()).sort((a, b) => appointmentTimestamp(a) - appointmentTimestamp(b));
+        document.getElementById("stats").innerHTML = [
+          ["exams", state.exams.length, "Exames registrados"], ["medications", state.medications.length, "Medicamentos"], ["appointments", upcoming.length, "Consultas futuras"]
+        ].map(([icon, number, label]) => `<div class="stat-card"><span class="stat-icon">${icons[icon]}</span><div><div class="stat-number">${number}</div><div class="stat-label">${label}</div></div></div>`).join("");
+        const quick = [
+          ["glucose", "Glicemia", "Registre um dextro"], ["blood-pressure", "Pressão arterial", "Registre uma medição"], ["exams", "Exames", "Seus resultados"], ["medications", "Medicamentos", "Sua rotina"], ["appointments", "Consultas", "Seus encontros"], ["caregiver", "Cuidador", "Sua rede de apoio"]
+        ];
+        document.getElementById("quick-links").innerHTML = quick.map(([key, title, subtitle]) => `<button class="quick-card" data-go="${key}"><span class="quick-icon">${icons[key]}</span><strong>${title}</strong><small>${subtitle}</small></button>`).join("");
+        document.getElementById("quick-links").insertAdjacentHTML("beforeend", `<a class="quick-card" href="contagem.html"><span class="quick-icon" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M6 3h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="1.8"/><path d="M8 7h8M8 11h2m4 0h2m-8 4h2m4 0h2m-8 4h2m4 0h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span><strong>Contagem de carboidratos</strong><small>Calcule uma refeição</small></a>`);
+        const recent = [...state.exams.map(item => ({ ...item, kind: "Exame" })), ...state.appointments.map(item => ({ ...item, kind: "Consulta" })), ...state.glucose.map(item => ({ ...item, name: `${item.value} mg/dL`, kind: "Glicemia" })), ...state.bloodPressure.map(item => ({ ...item, name: `${item.systolic}/${item.diastolic} mmHg`, kind: "Pressão arterial" }))].sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 3);
+        document.getElementById("recent-list").innerHTML = recent.length ? `<div class="record-list">${recent.map(item => `<div class="record-row"><span class="record-dot"></span><div class="record-details"><strong>${esc(item.name || item.specialty)}</strong><small>${item.kind} · ${esc(shortDate(item.date))}</small></div></div>`).join("")}</div>` : `<div class="empty-state">Ainda não há registros.<br>Quando adicionar um, ele aparece aqui.</div>`;
+        const next = upcoming[0];
+        document.getElementById("next-appointment").innerHTML = next ? `<div class="record-row"><span class="record-symbol">${icons.appointments}</span><div class="record-details"><span class="tag tag-warm">${esc(shortDate(next.date))} · ${esc(next.time)}</span><strong style="margin-top:8px">${esc(next.specialty)}</strong><small>${esc(next.doctor || "Médico não informado")}${next.location ? ` · ${esc(next.location)}` : ""}</small></div></div>` : `<div class="empty-state">Nenhuma consulta futura agendada.<br><button class="text-button" data-action="add-appointment">Adicionar consulta</button></div>`;
+      }
+      function renderGlucose() {
+        const limits = state.glucoseRange;
+        document.getElementById("clear-glucose-range").disabled = !limits;
+        const updatedBy = limits?.updatedBy === "cuidador" ? "cuidador" : "usuário";
+        document.getElementById("glucose-range-summary").innerHTML = limits
+          ? `<span class="tag">Limite pessoal: ${esc(limits.low)}–${esc(limits.high)} mg/dL</span><p class="muted" style="margin:10px 0 0;font-size:12px">Configurado por ${updatedBy} conforme orientação da equipe de saúde.</p>`
+          : `<p class="muted">Limites pessoais ainda não configurados. Configure os valores indicados pela sua equipe de saúde para ativar os alertas.</p>`;
+        const latest = [...state.glucose].sort((a, b) => `${b.date}T${b.time}`.localeCompare(`${a.date}T${a.time}`))[0];
+        document.getElementById("glucose-latest").innerHTML = latest
+          ? `<strong>${esc(latest.value)} mg/dL</strong><span class="muted"> · ${esc(dateFormat(latest.date))}, ${esc(latest.time)} · ${esc(latest.context)}</span>`
+          : `<span class="muted">Nenhuma medição registrada.</span>`;
+        document.getElementById("glucose-list").innerHTML = state.glucose.length
+            ? [...state.glucose].sort((a, b) => `${b.date}T${b.time}`.localeCompare(`${a.date}T${a.time}`)).map(item => `<article class="full-record"><span class="record-symbol">${icons.glucose}</span><div class="record-details"><strong>${esc(item.value)} mg/dL</strong><small>${esc(dateFormat(item.date))} · ${esc(item.time)} · ${esc(item.context)}</small>${item.notes ? `<p>${esc(item.notes)}</p>` : ""}</div>${recordActions("glucose", item.id, `medição de ${item.value} mg/dL`)}</article>`).join("")
+          : `<div class="panel empty-state">As medições que você registrar aparecerão aqui.</div>`;
+      }
+      function renderBloodPressure() {
+        const limits = state.bloodPressureRange;
+        document.getElementById("clear-pressure-range").disabled = !limits;
+        const updatedBy = limits?.updatedBy === "cuidador" ? "cuidador" : "usuário";
+        document.getElementById("pressure-range-summary").innerHTML = limits
+          ? `<span class="tag">Sistólica: ${esc(limits.lowSystolic)}–${esc(limits.highSystolic)} · Diastólica: ${esc(limits.lowDiastolic)}–${esc(limits.highDiastolic)} mmHg</span><p class="muted" style="margin:10px 0 0;font-size:12px">Configurado por ${updatedBy} conforme orientação da equipe de saúde.</p>`
+          : `<p class="muted">Limites pessoais ainda não configurados. Configure-os com orientação da equipe de saúde para ativar os alertas.</p>`;
+        const latest = [...state.bloodPressure].sort((a, b) => `${b.date}T${b.time}`.localeCompare(`${a.date}T${a.time}`))[0];
+        document.getElementById("pressure-latest").innerHTML = latest
+          ? `<strong>${esc(latest.systolic)}/${esc(latest.diastolic)} mmHg</strong>${latest.pulse ? `<span class="muted"> · Pulso ${esc(latest.pulse)} bpm</span>` : ""}<span class="muted"> · ${esc(dateFormat(latest.date))}, ${esc(latest.time)} · ${esc(latest.context)}</span>`
+          : `<span class="muted">Nenhuma medição registrada.</span>`;
+        document.getElementById("pressure-list").innerHTML = state.bloodPressure.length
+          ? [...state.bloodPressure].sort((a, b) => `${b.date}T${b.time}`.localeCompare(`${a.date}T${a.time}`)).map(item => `<article class="full-record"><span class="record-symbol">${icons["blood-pressure"]}</span><div class="record-details"><strong>${esc(item.systolic)}/${esc(item.diastolic)} mmHg</strong><small>${esc(dateFormat(item.date))} · ${esc(item.time)} · ${esc(item.context)}${item.pulse ? ` · Pulso ${esc(item.pulse)} bpm` : ""}</small>${item.notes ? `<p>${esc(item.notes)}</p>` : ""}</div>${recordActions("bloodPressure", item.id, "medição de pressão arterial")}</article>`).join("")
+          : `<div class="panel empty-state">As medições que você registrar aparecerão aqui.</div>`;
+      }
+      function recordActions(kind, id, label, deleteAction = "delete-record") {
+        return `<div class="record-actions"><button class="icon-button" data-action="edit-record" data-kind="${esc(kind)}" data-id="${esc(id)}" aria-label="Editar ${esc(label)}" title="Editar registro"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="m14 5 5 5M4 20l4.5-1 10.8-10.8a2.1 2.1 0 0 0-3-3L5.5 16 4 20Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="icon-button" data-action="${deleteAction}" data-kind="${esc(kind)}" data-id="${esc(id)}" aria-label="Excluir ${esc(label)}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 7h16m-10 4v6m4-6v6M6 7l1 14h10l1-14M9 7V4h6v3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>`;
+      }
+      function googleCalendarUrl(appointment) {
+        const start = appointmentTimestamp(appointment);
+        const formatCalendarDate = timestamp => new Date(timestamp).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}Z$/, "Z");
+        const params = new URLSearchParams({
+          action: "TEMPLATE",
+          text: `Consulta médica: ${appointment.doctor}`,
+          dates: `${formatCalendarDate(start)}/${formatCalendarDate(start + 60 * 60 * 1000)}`,
+          details: `Consulta de ${appointment.specialty}, agendada pelo Cuidar+ Acessível.`,
+          add: state.profile.email
+        });
+        if (appointment.location) params.set("location", appointment.location);
+        return `https://calendar.google.com/calendar/render?${params.toString()}`;
+      }
+      const recordConfig = {
+        exams: { container: "exam-list", icon: "exams", empty: "Seus exames aparecerão aqui quando você os adicionar.", title: item => item.name, detail: item => `${dateFormat(item.date)}${item.result ? ` · ${item.result}` : ""}`, note: item => item.notes },
+        medications: { container: "medication-list", icon: "medications", empty: "Nenhum medicamento registrado. Adicione um para organizar sua rotina.", title: item => item.name, detail: item => `${item.dosage || "Dosagem não informada"}${item.time ? ` · ${item.time}` : ""}`, note: item => item.notes },
+        appointments: { container: "appointment-list", icon: "appointments", empty: "Suas consultas aparecerão aqui quando você as adicionar.", title: item => item.specialty, detail: item => `${dateFormat(item.date)}${item.time ? ` · ${item.time}` : ""}${item.doctor ? ` · ${item.doctor}` : ""}${item.location ? ` · ${item.location}` : ""}`, note: item => item.notes }
+      };
+      function renderLists() {
+        for (const [key, config] of Object.entries(recordConfig)) {
+          const items = [...state[key]].sort((a, b) => (a.date || "").localeCompare(b.date || ""));
+          document.getElementById(config.container).innerHTML = items.length ? items.map(item => `<article class="full-record"><span class="record-symbol">${icons[config.icon]}</span><div class="record-details"><strong>${esc(config.title(item))}</strong><small>${esc(config.detail(item))}</small>${key === "appointments" && item.reminderMinutes > 0 ? `<p><span class="tag">Lembrete ${item.reminderMinutes === 1440 ? "1 dia" : item.reminderMinutes < 60 ? `${item.reminderMinutes} min` : `${item.reminderMinutes / 60} h`} antes</span></p>` : ""}${key === "appointments" && state.profile.email ? `<p><a href="${esc(googleCalendarUrl(item))}" target="_blank" rel="noopener noreferrer">Adicionar ao Google Agenda</a></p>` : ""}${config.note(item) ? `<p>${esc(config.note(item))}</p>` : ""}${item.resultLink ? `<p><a href="${esc(item.resultLink)}" target="_blank" rel="noopener noreferrer">Abrir resultado do exame</a></p>` : ""}${item.image ? `<p><a href="${item.image}" target="_blank" rel="noopener">Ver imagem anexada</a></p>` : ""}${item.reminder ? `<p><span class="tag">Lembrete ativado</span></p>` : ""}</div>${recordActions(key, item.id, config.title(item))}</article>`).join("") : `<div class="panel empty-state">${config.empty}</div>`;
+        }
+        document.getElementById("care-code").textContent = state.caregiverCode || "------";
+        document.getElementById("care-notes").innerHTML = state.notes.length ? `<div class="record-list">${[...state.notes].reverse().map(note => `<div class="record-row"><span class="record-dot"></span><div class="record-details"><strong>${esc(note.text)}</strong><small>${esc(dateFormat(note.date))}</small></div>${recordActions("notes", note.id, "observação", "delete-note")}</div>`).join("")}</div>` : `<div class="empty-state">Nenhuma observação por enquanto.</div>`;
+      }
+      function render() {
+        updateProfile();
+        renderNav();
+        updateSpeechControls();
+        document.getElementById("medication-notice").textContent = nativeAndroid
+          ? "No Android, autorize notificações e alarmes exatos para receber alertas diários mesmo com o app fechado."
+          : "No navegador, os lembretes funcionam enquanto esta página está aberta. Alertas com o app fechado estão disponíveis na versão Android instalada.";
+        const darkModeOn = document.body.classList.contains("dark-mode");
+        document.querySelectorAll('[data-action="dark-mode"]').forEach(control => {
+          control.setAttribute("aria-pressed", String(darkModeOn));
+          control.setAttribute("aria-label", `${darkModeOn ? "Desativar" : "Ativar"} modo noturno`);
+        });
+        document.querySelectorAll(".screen").forEach(screen => { screen.hidden = screen.id !== `screen-${activeScreen}`; });
+        if (state.profile) { renderHome(); renderLists(); renderGlucose(); renderBloodPressure(); }
+        document.querySelectorAll('[data-action="edit-profile"]').forEach(button => { button.disabled = !state.profile; button.style.opacity = state.profile ? "1" : ".6"; });
+      }
+      function go(screen) {
+        if (screen !== "onboarding" && !state.profile) { toast("Faça seu cadastro para continuar."); return; }
+        if (speechActive) stopSpeech();
+        activeScreen = screen;
+        render();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        document.getElementById("main-content").focus({ preventScroll: true });
+      }
+      function field(label, name, options = {}) {
+        const { type = "text", required = false, placeholder = "", value = "", min = "", max = "", wide = false } = options;
+        return `<label class="${wide ? "wide" : ""}">${label}<input name="${name}" type="${type}" ${required ? "required" : ""} ${min ? `min="${min}"` : ""} ${max ? `max="${max}"` : ""} maxlength="${type === "text" ? 100 : ""}" placeholder="${placeholder}" value="${esc(value)}"></label>`;
+      }
+      function openModal(type, record = null) {
+        const modal = document.getElementById("modal-backdrop");
+        const title = document.getElementById("modal-title");
+        const body = document.getElementById("modal-body");
+        const recordIdAttribute = record ? `data-record-id="${esc(record.id)}"` : "";
+        let form = "";
+        if (type === "exam") {
+          title.textContent = record ? "Editar exame" : "Adicionar exame";
+          form = `<form id="record-form" class="form-stack" data-kind="exams" ${recordIdAttribute}><div class="field-grid">${field("Nome do exame", "name", { required: true, placeholder: "Ex.: Hemograma", value: record?.name || "" })}${field("Data", "date", { type: "date", required: true, value: record?.date || "" })}<label class="wide">Resultado<textarea name="result" maxlength="1000" placeholder="Digite o resultado ou um resumo">${esc(record?.result || "")}</textarea></label><label class="wide">Link do resultado (opcional)<input name="resultLink" type="url" maxlength="2048" autocomplete="url" placeholder="https://..." inputmode="url" value="${esc(record?.resultLink || "")}"><small class="muted">Adicione o endereço seguro do portal ou arquivo do exame.</small></label><label class="wide">Observações<textarea name="notes" maxlength="500" placeholder="Informações que queira guardar">${esc(record?.notes || "")}</textarea></label><label class="wide">Foto do resultado (opcional)<input type="file" name="image" accept="image/*"><small class="muted">${record?.image ? "A imagem atual será mantida se você não selecionar outra." : "A imagem fica salva neste navegador. Máximo de 1 MB."}</small></label></div><div class="modal-actions"><button class="button button-secondary" type="button" data-action="close-modal">Cancelar</button><button class="button button-primary" type="submit">Salvar alterações</button></div></form>`;
+        } else if (type === "medication") {
+          title.textContent = record ? "Editar medicamento" : "Adicionar medicamento";
+          form = `<form id="record-form" class="form-stack" data-kind="medications" ${recordIdAttribute}><div class="field-grid">${field("Nome do medicamento", "name", { required: true, placeholder: "Ex.: Losartana", value: record?.name || "" })}${field("Dosagem", "dosage", { placeholder: "Ex.: 50 mg", value: record?.dosage || "" })}${field("Horário", "time", { type: "time", value: record?.time || "" })}<label class="wide">Observações<textarea name="notes" maxlength="500" placeholder="Orientações anotadas pela sua equipe de saúde">${esc(record?.notes || "")}</textarea></label></div><label class="checkbox-row"><input type="checkbox" name="reminder" ${record?.reminder ? "checked" : ""}><span>${nativeAndroid ? "Receber alerta diário mesmo com o app fechado neste aparelho" : "Quero receber um lembrete enquanto o app estiver aberto"}</span></label><div class="modal-actions"><button class="button button-secondary" type="button" data-action="close-modal">Cancelar</button><button class="button button-primary" type="submit">Salvar alterações</button></div></form>`;
+        } else if (type === "glucose") {
+          title.textContent = record ? "Editar dextro" : "Registrar dextro";
+          const now = new Date();
+          const localDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+          const localTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+          form = `<form id="record-form" class="form-stack" data-kind="glucose" ${recordIdAttribute}><div class="field-grid">${field("Resultado (mg/dL)", "value", { type: "number", required: true, min: "1", max: "1000", value: record?.value ?? "" })}${field("Data", "date", { type: "date", required: true, value: record?.date || localDate })}${field("Horário", "time", { type: "time", required: true, value: record?.time || localTime })}<label>Contexto<select name="context"><option ${record?.context === "Jejum" ? "selected" : ""}>Jejum</option><option ${record?.context === "Antes da refeição" ? "selected" : ""}>Antes da refeição</option><option ${record?.context === "Após refeição" ? "selected" : ""}>Após refeição</option><option ${record?.context === "Antes de dormir" ? "selected" : ""}>Antes de dormir</option><option ${record?.context === "Outro" ? "selected" : ""}>Outro</option></select></label><label class="wide">Observações<textarea name="notes" maxlength="500" placeholder="Opcional">${esc(record?.notes || "")}</textarea></label></div><p class="muted" style="font-size:12px">Registre o valor exibido pelo seu medidor, sem alterar a unidade.</p><div class="modal-actions"><button class="button button-secondary" type="button" data-action="close-modal">Cancelar</button><button class="button button-primary" type="submit">Salvar alterações</button></div></form>`;
+        } else if (type === "glucose-range") {
+          title.textContent = "Limites pessoais de alerta";
+          const limits = state.glucoseRange || {};
+          form = `<form id="glucose-range-form" class="form-stack"><p class="muted">Use somente os limites definidos com sua equipe de saúde. Eles serão usados para avisos, não para diagnóstico ou orientação de tratamento.</p><div class="field-grid">${field("Avisar abaixo de (mg/dL)", "low", { type: "number", required: true, min: "1", max: "1000", value: limits.low ?? "" })}${field("Avisar acima de (mg/dL)", "high", { type: "number", required: true, min: "1", max: "1000", value: limits.high ?? "" })}<label class="wide">Quem está ajustando?<select name="updatedBy"><option value="usuario" ${limits.updatedBy === "cuidador" ? "" : "selected"}>Usuário</option><option value="cuidador" ${limits.updatedBy === "cuidador" ? "selected" : ""}>Cuidador</option></select></label></div><p class="muted" style="font-size:12px">Neste protótipo, a escolha entre usuário e cuidador não é verificada por login.</p><div class="modal-actions"><button class="button button-secondary" type="button" data-action="close-modal">Cancelar</button><button class="button button-primary" type="submit">Salvar limites</button></div></form>`;
+        } else if (type === "blood-pressure") {
+          title.textContent = record ? "Editar pressão arterial" : "Registrar pressão arterial";
+          const now = new Date();
+          const localDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+          const localTime = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+          form = `<form id="record-form" class="form-stack" data-kind="bloodPressure" ${recordIdAttribute}><div class="field-grid">${field("Sistólica (mmHg)", "systolic", { type: "number", required: true, min: "1", max: "300", value: record?.systolic ?? "" })}${field("Diastólica (mmHg)", "diastolic", { type: "number", required: true, min: "1", max: "300", value: record?.diastolic ?? "" })}${field("Pulso (bpm, opcional)", "pulse", { type: "number", min: "1", max: "300", value: record?.pulse ?? "" })}${field("Data", "date", { type: "date", required: true, value: record?.date || localDate })}${field("Horário", "time", { type: "time", required: true, value: record?.time || localTime })}<label>Contexto<select name="context"><option ${record?.context === "Em repouso" ? "selected" : ""}>Em repouso</option><option ${record?.context === "Pela manhã" ? "selected" : ""}>Pela manhã</option><option ${record?.context === "À noite" ? "selected" : ""}>À noite</option><option ${record?.context === "Após atividade física" ? "selected" : ""}>Após atividade física</option><option ${record?.context === "Outro" ? "selected" : ""}>Outro</option></select></label><label class="wide">Observações<textarea name="notes" maxlength="500" placeholder="Opcional">${esc(record?.notes || "")}</textarea></label></div><p class="muted" style="font-size:12px">Registre os valores do aparelho em mmHg. Esta tela não interpreta a medição.</p><div class="modal-actions"><button class="button button-secondary" type="button" data-action="close-modal">Cancelar</button><button class="button button-primary" type="submit">Salvar alterações</button></div></form>`;
+        } else if (type === "blood-pressure-range") {
+          title.textContent = "Limites pessoais de pressão";
+          const limits = state.bloodPressureRange || {};
+          form = `<form id="pressure-range-form" class="form-stack"><p class="muted">Use somente os limites sistólicos e diastólicos definidos com sua equipe de saúde. Não há valores padrão.</p><div class="field-grid">${field("Sistólica mínima (mmHg)", "lowSystolic", { type: "number", required: true, min: "1", max: "300", value: limits.lowSystolic ?? "" })}${field("Sistólica máxima (mmHg)", "highSystolic", { type: "number", required: true, min: "1", max: "300", value: limits.highSystolic ?? "" })}${field("Diastólica mínima (mmHg)", "lowDiastolic", { type: "number", required: true, min: "1", max: "300", value: limits.lowDiastolic ?? "" })}${field("Diastólica máxima (mmHg)", "highDiastolic", { type: "number", required: true, min: "1", max: "300", value: limits.highDiastolic ?? "" })}<label class="wide">Quem está ajustando?<select name="updatedBy"><option value="usuario" ${limits.updatedBy === "cuidador" ? "" : "selected"}>Usuário</option><option value="cuidador" ${limits.updatedBy === "cuidador" ? "selected" : ""}>Cuidador</option></select></label></div><p class="muted" style="font-size:12px">Neste protótipo, a escolha entre usuário e cuidador não é verificada por login.</p><div class="modal-actions"><button class="button button-secondary" type="button" data-action="close-modal">Cancelar</button><button class="button button-primary" type="submit">Salvar limites</button></div></form>`;
+        } else if (type === "note") {
+          title.textContent = "Editar observação";
+          form = `<form id="note-edit-form" class="form-stack" data-record-id="${esc(record.id)}"><label>Observação<textarea name="note" required maxlength="500">${esc(record.text)}</textarea></label><div class="modal-actions"><button class="button button-secondary" type="button" data-action="close-modal">Cancelar</button><button class="button button-primary" type="submit">Salvar alterações</button></div></form>`;
+        } else {
+          title.textContent = record ? "Editar consulta" : "Adicionar consulta";
+          const now = new Date();
+          const localDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+          form = `<form id="record-form" class="form-stack" data-kind="appointments" ${recordIdAttribute}><div class="field-grid">${field("Especialidade", "specialty", { required: true, placeholder: "Ex.: Cardiologia", value: record?.specialty || "" })}${field("Nome do médico", "doctor", { required: true, placeholder: "Nome e sobrenome", value: record?.doctor || "" })}${field("Data", "date", { type: "date", required: true, value: record?.date || localDate })}${field("Hora da consulta", "time", { type: "time", required: true, value: record?.time || "" })}<label>Local<input name="location" maxlength="160" placeholder="Unidade ou endereço" value="${esc(record?.location || "")}"></label><label>Lembrar antes da consulta<select name="reminderMinutes"><option value="0" ${record && !record.reminderMinutes ? "selected" : ""}>Sem lembrete</option><option value="5" ${record?.reminderMinutes === 5 ? "selected" : ""}>5 minutos antes</option><option value="15" ${record?.reminderMinutes === 15 || !record ? "selected" : ""}>15 minutos antes</option><option value="30" ${record?.reminderMinutes === 30 ? "selected" : ""}>30 minutos antes</option><option value="60" ${record?.reminderMinutes === 60 ? "selected" : ""}>1 hora antes</option><option value="1440" ${record?.reminderMinutes === 1440 ? "selected" : ""}>1 dia antes</option></select></label><label class="wide">Observações<textarea name="notes" maxlength="500" placeholder="O que você gostaria de lembrar?">${esc(record?.notes || "")}</textarea></label></div><div class="modal-actions"><button class="button button-secondary" type="button" data-action="close-modal">Cancelar</button><button class="button button-primary" type="submit">Salvar alterações</button></div></form>`;
+        }
+        body.innerHTML = form;
+        const submitButton = body.querySelector('button[type="submit"]');
+        if (submitButton && type !== "note") {
+          const createLabels = { exam: "Salvar exame", medication: "Salvar medicamento", glucose: "Salvar medição", "blood-pressure": "Salvar medição", appointment: "Salvar consulta" };
+          submitButton.textContent = record ? "Salvar alterações" : createLabels[type];
+        }
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+        body.querySelector("input:not([type=checkbox])")?.focus();
+      }
+      function openRecordEditor(kind, id) {
+        if (kind === "notes") {
+          const note = state.notes.find(item => item.id === id);
+          if (note) openModal("note", note);
+          return;
+        }
+        const record = state[kind]?.find(item => item.id === id);
+        const types = { exams: "exam", medications: "medication", appointments: "appointment", glucose: "glucose", bloodPressure: "blood-pressure" };
+        if (record && types[kind]) openModal(types[kind], record);
+      }
+      function closeModal() {
+        document.getElementById("modal-backdrop").hidden = true;
+        document.body.style.overflow = "";
+      }
+      function generateCode() {
+        const bytes = new Uint32Array(1);
+        crypto.getRandomValues(bytes);
+        state.caregiverCode = String(bytes[0] % 1000000).padStart(6, "0");
+        persist(); renderLists(); toast("Código de demonstração gerado.");
+      }
+      function checkMedicationReminders() {
+        const now = new Date();
+        const dateKey = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+        const timeKey = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+        for (const medication of state.medications) {
+          const reminderKey = `${dateKey}:${medication.id}`;
+          if (!medication.reminder || medication.time !== timeKey || remindedToday.has(reminderKey)) continue;
+          remindedToday.add(reminderKey);
+          const details = [medication.name, medication.dosage].filter(Boolean).join(" · ");
+          toast(`Lembrete: confira ${details}.`);
+          if ("Notification" in window && Notification.permission === "granted") {
+            try { new Notification("Lembrete de medicamento", { body: details }); } catch { /* Notificações podem estar indisponíveis neste contexto. */ }
+          }
+        }
+      }
+      function checkAppointmentReminders() {
+        const now = Date.now();
+        for (const appointment of state.appointments) {
+          const appointmentAt = appointmentTimestamp(appointment);
+          const reminderMinutes = Number(appointment.reminderMinutes || 0);
+          const reminderAt = appointmentAt - reminderMinutes * 60000;
+          if (!reminderMinutes || appointment.reminderSent || !Number.isFinite(appointmentAt) || appointmentAt <= now || reminderAt > now || remindedAppointments.has(appointment.id)) continue;
+          remindedAppointments.add(appointment.id);
+          appointment.reminderSent = true;
+          try { persist(); } catch { /* O aviso desta sessão continua válido se o armazenamento estiver indisponível. */ }
+          toast(`Lembrete: consulta de ${appointment.specialty} às ${appointment.time}.`);
+          if (!nativeAndroid && "Notification" in window && Notification.permission === "granted") {
+            try { new Notification("Lembrete de consulta", { body: `Sua consulta está marcada para as ${appointment.time}.` }); } catch { /* Notificações podem estar indisponíveis neste contexto. */ }
+          }
+        }
+      }
+      if (!nativeAndroid) window.setInterval(() => { checkMedicationReminders(); checkAppointmentReminders(); }, 15000);
+      document.addEventListener("click", async event => {
+        const button = event.target.closest("button");
+        if (!button) return;
+        if (button.dataset.go) { go(button.dataset.go); return; }
+        const action = button.dataset.action;
+        if (action === "access-menu") {
+          const panel = document.getElementById("mobile-access-panel");
+          panel.hidden = !panel.hidden;
+          button.setAttribute("aria-expanded", String(!panel.hidden));
+        }
+        if (action === "add-exam") openModal("exam");
+        if (action === "add-medication") openModal("medication");
+        if (action === "add-appointment") openModal("appointment");
+        if (action === "edit-record") openRecordEditor(button.dataset.kind, button.dataset.id);
+        if (action === "add-glucose") openModal("glucose");
+        if (action === "edit-glucose-range") openModal("glucose-range");
+        if (action === "add-blood-pressure") openModal("blood-pressure");
+        if (action === "edit-pressure-range") openModal("blood-pressure-range");
+        if (action === "clear-glucose-range") {
+          if (!state.glucoseRange || !window.confirm("Desativar os limites de alerta pessoais? O histórico será mantido.")) return;
+          state.glucoseRange = null;
+          persist(); render(); toast("Limites de alerta desativados.");
+        }
+        if (action === "clear-pressure-range") {
+          if (!state.bloodPressureRange || !window.confirm("Desativar os limites de pressão? O histórico será mantido.")) return;
+          state.bloodPressureRange = null;
+          persist(); render(); toast("Limites de pressão desativados.");
+        }
+        if (action === "close-modal") closeModal();
+        if (action === "font-up" || action === "font-down") {
+          const current = Number(getComputedStyle(document.documentElement).getPropertyValue("--scale").trim()) || 1;
+          document.documentElement.style.setProperty("--scale", String(Math.min(1.3, Math.max(1, current + (action === "font-up" ? .1 : -.1)))));
+        }
+        if (action === "contrast") {
+          const on = document.body.classList.toggle("contrast");
+          document.querySelectorAll('[data-action="contrast"]').forEach(control => control.setAttribute("aria-pressed", String(on)));
+          toast(on ? "Alto contraste ativado." : "Alto contraste desativado.");
+        }
+        if (action === "dark-mode") {
+          const on = document.body.classList.toggle("dark-mode");
+          localStorage.setItem(THEME_KEY, on ? "dark" : "light");
+          render();
+          toast(on ? "Modo noturno ativado." : "Modo noturno desativado.");
+        }
+        if (action === "speak") {
+          if (!("speechSynthesis" in window)) { toast("Leitura por voz não disponível neste navegador."); return; }
+          if (speechActive) {
+            stopSpeech();
+            toast("Leitura interrompida.");
+            return;
+          }
+          const active = document.querySelector(".screen:not([hidden])");
+          const text = active?.innerText || "Cuidar Mais Acessível";
+          speechChunks = splitSpeechText(text).slice(0, 30);
+          if (!speechChunks.length) { toast("Não há texto para ler nesta tela."); return; }
+          window.speechSynthesis.cancel();
+          speechActive = true;
+          const generation = ++speechGeneration;
+          updateSpeechControls();
+          speakNextChunk(generation);
+        }
+        if (action === "edit-profile") {
+          if (!state.profile) return;
+          const form = document.getElementById("profile-form");
+          form.elements.namedItem("name").value = state.profile.name || "";
+          form.elements.namedItem("surname").value = state.profile.surname || "";
+          form.elements.namedItem("email").value = state.profile.email || "";
+          form.elements.namedItem("phone").value = state.profile.phone || "";
+          form.elements.namedItem("birthDate").value = state.profile.birthDate || "";
+          form.elements.namedItem("conditionOther").value = state.profile.conditionOther || "";
+          form.elements.namedItem("visualOther").value = state.profile.visualOther || "";
+          form.elements.namedItem("terms").checked = true;
+          for (const input of form.querySelectorAll('input[name="conditions"]')) input.checked = state.profile.conditions.includes(input.value);
+          for (const input of form.querySelectorAll('input[name="visualConditions"]')) input.checked = state.profile.visualConditions.includes(input.value);
+          go("onboarding");
+          form.querySelector("button[type=submit]").textContent = "Salvar alterações";
+        }
+        if (action === "new-code") generateCode();
+        if (action === "share-code") {
+          if (!state.caregiverCode) { generateCode(); }
+          try { await navigator.clipboard.writeText(state.caregiverCode); toast("Código copiado. Ele é apenas demonstrativo neste protótipo."); }
+          catch { toast(`Código de demonstração: ${state.caregiverCode}`); }
+        }
+        if (action === "delete-record") {
+          const kind = button.dataset.kind;
+          if (kind === "medications" && nativeAndroid) window.AndroidReminders.cancelDailyReminder(button.dataset.id);
+          if (kind === "appointments" && nativeAndroid) window.AndroidReminders.cancelAppointmentReminder(button.dataset.id);
+          state[kind] = state[kind].filter(item => item.id !== button.dataset.id);
+          persist(); render(); toast("Registro excluído.");
+        }
+        if (action === "delete-note") {
+          state.notes = state.notes.filter(note => note.id !== button.dataset.id);
+          persist(); renderLists(); toast("Observação excluída.");
+        }
+      });
+      document.getElementById("profile-form").addEventListener("change", event => {
+        const input = event.target;
+        if (input.type !== "checkbox" || !["conditions", "visualConditions"].includes(input.name) || !input.checked) return;
+        const exclusiveValues = input.name === "visualConditions"
+          ? ["Sem deficiência visual", "Prefiro não informar"]
+          : ["Prefiro não informar"];
+        const checkboxes = document.querySelectorAll(`#profile-form input[name="${input.name}"]`);
+        if (exclusiveValues.includes(input.value)) {
+          for (const checkbox of checkboxes) if (checkbox !== input) checkbox.checked = false;
+        } else {
+          for (const checkbox of checkboxes) if (exclusiveValues.includes(checkbox.value)) checkbox.checked = false;
+        }
+      });
+      document.addEventListener("submit", async event => {
+        const form = event.target;
+        if (form.id === "profile-form") {
+          event.preventDefault();
+          const data = new FormData(form);
+          const profile = normalizeProfile({
+            name: data.get("name").trim(),
+            surname: data.get("surname").trim(),
+            email: data.get("email").trim(),
+            phone: data.get("phone").trim(),
+            birthDate: data.get("birthDate"),
+            conditions: data.getAll("conditions"),
+            conditionOther: data.get("conditionOther").trim(),
+            visualConditions: data.getAll("visualConditions"),
+            visualOther: data.get("visualOther").trim()
+          });
+          if (calculateAge(profile.birthDate) === null) {
+            toast("Informe uma data de nascimento válida para calcular a idade.");
+            form.elements.namedItem("birthDate").focus();
+            return;
+          }
+          const previousProfile = state.profile;
+          state.profile = profile;
+          try { persist(); } catch { state.profile = previousProfile; toast("Não foi possível salvar o perfil neste dispositivo."); return; }
+          form.querySelector('input[name="terms"]').checked = true;
+          form.querySelector("button[type=submit]").textContent = "Salvar e continuar";
+          go("home"); toast("Cadastro salvo neste dispositivo.");
+        }
+        if (form.id === "record-form") {
+          event.preventDefault();
+          const data = new FormData(form);
+          const kind = form.dataset.kind;
+          const editingId = form.dataset.recordId || "";
+          const existingIndex = editingId ? state[kind].findIndex(item => item.id === editingId) : -1;
+          if (editingId && existingIndex < 0) { closeModal(); toast("Este registro não está mais disponível."); return; }
+          const previousRecord = existingIndex >= 0 ? state[kind][existingIndex] : null;
+          const record = previousRecord ? { ...previousRecord } : { id: crypto.randomUUID() };
+          record.date = data.get("date") || "";
+          record.notes = (data.get("notes") || "").trim();
+          if (kind === "exams") {
+            record.name = data.get("name").trim(); record.result = (data.get("result") || "").trim();
+            const resultLink = (data.get("resultLink") || "").trim();
+            if (resultLink) {
+              try {
+                const parsedLink = new URL(resultLink);
+                if (!["http:", "https:"].includes(parsedLink.protocol) || !parsedLink.hostname) throw new Error("Invalid result link");
+                record.resultLink = parsedLink.href;
+              } catch {
+                toast("O link precisa ser um endereço web válido começando com http:// ou https://.");
+                form.elements.namedItem("resultLink").focus();
+                return;
+              }
+            } else record.resultLink = "";
+            const image = data.get("image");
+            if (image?.size) {
+              if (image.size > 1024 * 1024) { toast("A imagem deve ter no máximo 1 MB."); return; }
+              record.image = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = reject; reader.readAsDataURL(image); });
+            }
+          }
+          if (kind === "medications") {
+            record.name = data.get("name").trim(); record.dosage = (data.get("dosage") || "").trim(); record.time = data.get("time") || ""; record.reminder = data.has("reminder");
+            if (record.reminder && !record.time) { toast("Informe o horário para ativar o lembrete."); form.elements.namedItem("time").focus(); return; }
+            if (record.reminder && !nativeAndroid && "Notification" in window && Notification.permission === "default") {
+              try { await Notification.requestPermission(); } catch { /* Permissão pode não existir em arquivo local. */ }
+            }
+          }
+          if (kind === "appointments") {
+            record.specialty = data.get("specialty").trim();
+            record.doctor = data.get("doctor").trim();
+            record.time = data.get("time");
+            record.location = (data.get("location") || "").trim();
+            record.reminderMinutes = Number(data.get("reminderMinutes") || 0);
+            record.reminderSent = false;
+            const appointmentAt = appointmentTimestamp(record);
+            if (!Number.isFinite(appointmentAt) || appointmentAt <= Date.now()) { toast("Escolha uma data e hora futuras para a consulta."); return; }
+            if (record.reminderMinutes > 0 && appointmentAt - record.reminderMinutes * 60000 <= Date.now()) { toast("O horário escolhido para o lembrete já passou. Selecione outra antecedência."); return; }
+            if (record.reminderMinutes > 0 && !nativeAndroid && "Notification" in window && Notification.permission === "default") {
+              try { await Notification.requestPermission(); } catch { /* Notificações podem não estar disponíveis neste contexto. */ }
+            }
+          }
+          if (kind === "glucose") {
+            record.value = Number(data.get("value"));
+            record.time = data.get("time");
+            record.context = data.get("context");
+            if (!Number.isFinite(record.value) || record.value < 1 || record.value > 1000) { toast("Informe um valor válido em mg/dL."); return; }
+          }
+          if (kind === "bloodPressure") {
+            record.systolic = Number(data.get("systolic"));
+            record.diastolic = Number(data.get("diastolic"));
+            record.pulse = data.get("pulse") ? Number(data.get("pulse")) : null;
+            record.time = data.get("time");
+            record.context = data.get("context");
+            if (!Number.isFinite(record.systolic) || !Number.isFinite(record.diastolic) || record.systolic < 1 || record.systolic > 300 || record.diastolic < 1 || record.diastolic > 300 || record.systolic <= record.diastolic) {
+              toast("Confira os valores: a sistólica precisa ser maior que a diastólica.");
+              return;
+            }
+            if (record.pulse !== null && (!Number.isFinite(record.pulse) || record.pulse < 1 || record.pulse > 300)) { toast("Confira o valor de pulso informado."); return; }
+          }
+          if (previousRecord) state[kind][existingIndex] = record;
+          else state[kind].push(record);
+          try { persist(); } catch {
+            if (previousRecord) state[kind][existingIndex] = previousRecord;
+            else state[kind].pop();
+            toast("Não há espaço local suficiente para salvar este registro.");
+            return;
+          }
+          if (kind === "medications" && nativeAndroid) {
+            if (previousRecord) window.AndroidReminders.cancelDailyReminder(record.id);
+            if (record.reminder) window.AndroidReminders.scheduleDailyReminder(record.id, record.time);
+          }
+          if (kind === "appointments") {
+            remindedAppointments.delete(record.id);
+            if (nativeAndroid) {
+              if (previousRecord) window.AndroidReminders.cancelAppointmentReminder(record.id);
+              if (record.reminderMinutes > 0) window.AndroidReminders.scheduleAppointmentReminder(record.id, appointmentTimestamp(record), record.reminderMinutes);
+            }
+          }
+          closeModal(); render();
+          if (kind === "glucose") {
+            const limits = state.glucoseRange;
+            if (limits && record.value < Number(limits.low)) {
+              toast("Medição salva: abaixo do seu limite pessoal configurado.");
+              if (nativeAndroid) window.AndroidReminders.showGlucoseAlert();
+            } else if (limits && record.value > Number(limits.high)) {
+              toast("Medição salva: acima do seu limite pessoal configurado.");
+              if (nativeAndroid) window.AndroidReminders.showGlucoseAlert();
+            } else {
+              toast(limits ? "Medição salva dentro dos limites pessoais configurados." : "Medição salva. Configure limites pessoais para ativar os alertas.");
+            }
+          } else if (kind === "appointments") {
+            toast(record.reminderMinutes > 0 ? `Consulta salva. Lembrete definido para ${record.reminderMinutes === 1440 ? "1 dia" : record.reminderMinutes < 60 ? `${record.reminderMinutes} minutos` : "1 hora"} antes.` : "Consulta salva sem lembrete.");
+          } else if (kind === "bloodPressure") {
+            const limits = state.bloodPressureRange;
+            const outside = limits && (
+              record.systolic < limits.lowSystolic || record.systolic > limits.highSystolic ||
+              record.diastolic < limits.lowDiastolic || record.diastolic > limits.highDiastolic
+            );
+            if (outside) {
+              toast("Medição salva fora dos seus limites pessoais de pressão.");
+              if (nativeAndroid) window.AndroidReminders.showBloodPressureAlert();
+            } else {
+              toast(limits ? "Medição salva dentro dos limites pessoais configurados." : "Medição salva. Configure limites pessoais para ativar os alertas.");
+            }
+          } else {
+            toast(previousRecord ? "Alterações salvas neste dispositivo." : "Registro salvo neste dispositivo.");
+          }
+        }
+        if (form.id === "note-edit-form") {
+          event.preventDefault();
+          const index = state.notes.findIndex(note => note.id === form.dataset.recordId);
+          if (index < 0) { closeModal(); toast("Esta observação não está mais disponível."); return; }
+          const previousNote = state.notes[index];
+          state.notes[index] = { ...previousNote, text: new FormData(form).get("note").trim() };
+          try { persist(); } catch { state.notes[index] = previousNote; toast("Não foi possível salvar esta observação."); return; }
+          closeModal(); renderLists(); toast("Observação atualizada.");
+        }
+        if (form.id === "glucose-range-form") {
+          event.preventDefault();
+          const data = new FormData(form);
+          const low = Number(data.get("low"));
+          const high = Number(data.get("high"));
+          if (!Number.isFinite(low) || !Number.isFinite(high) || low >= high) {
+            toast("O limite baixo precisa ser menor que o limite alto.");
+            form.elements.namedItem("high").focus();
+            return;
+          }
+          const previousRange = state.glucoseRange;
+          state.glucoseRange = { low, high, updatedBy: data.get("updatedBy"), updatedAt: new Date().toISOString() };
+          try { persist(); } catch { state.glucoseRange = previousRange; toast("Não foi possível salvar os limites neste dispositivo."); return; }
+          closeModal(); render(); toast("Limites pessoais salvos neste dispositivo.");
+        }
+        if (form.id === "pressure-range-form") {
+          event.preventDefault();
+          const data = new FormData(form);
+          const range = {
+            lowSystolic: Number(data.get("lowSystolic")),
+            highSystolic: Number(data.get("highSystolic")),
+            lowDiastolic: Number(data.get("lowDiastolic")),
+            highDiastolic: Number(data.get("highDiastolic")),
+            updatedBy: data.get("updatedBy"),
+            updatedAt: new Date().toISOString()
+          };
+          if (![range.lowSystolic, range.highSystolic, range.lowDiastolic, range.highDiastolic].every(value => Number.isFinite(value) && value >= 1 && value <= 300)
+              || range.lowSystolic >= range.highSystolic || range.lowDiastolic >= range.highDiastolic) {
+            toast("Em cada valor, o limite mínimo precisa ser menor que o máximo.");
+            return;
+          }
+          const previousRange = state.bloodPressureRange;
+          state.bloodPressureRange = range;
+          try { persist(); } catch { state.bloodPressureRange = previousRange; toast("Não foi possível salvar os limites neste dispositivo."); return; }
+          closeModal(); render(); toast("Limites pessoais de pressão salvos.");
+        }
+        if (form.id === "care-note-form") {
+          event.preventDefault();
+          const text = new FormData(form).get("note").trim();
+          if (!text) return;
+          state.notes.push({ id: crypto.randomUUID(), text, date: new Date().toISOString().slice(0, 10) });
+          persist(); form.reset(); renderLists(); toast("Observação salva.");
+        }
+      });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && !document.getElementById("modal-backdrop").hidden) closeModal();
+      });
+      document.getElementById("modal-backdrop").addEventListener("click", event => { if (event.target.id === "modal-backdrop") closeModal(); });
+      render();
+    })();
+  </script>
+</body>
+</html>
